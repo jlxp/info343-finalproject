@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import {HashRouter as Router, Switch, Redirect, Route} from "react-router-dom";
 import './App.css';
+import {ROUTES} from "./Constants";
+import SignInView from "./SignIn";
+import GameView from "./Game";
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
@@ -8,14 +11,14 @@ import 'firebase/database';
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <Router>
+          <Switch>
+              <Route exact path={ROUTES.signIn} component={SignInView} />
+              <Route path={ROUTES.game} component={GameView} />
+              <Redirect to={ROUTES.signIn} />
+          </Switch>
+        </Router>
       </div>
     );
   }
