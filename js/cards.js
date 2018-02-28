@@ -221,6 +221,27 @@ const WHITE_CARDS = [
     },
     {
         answer: "Capstone"
+    },
+    {
+        answer: "Sudo commands"
+    },
+    {
+        answer: "INFO Game Night"
+    }, 
+    {
+        answer: "Tech memes"
+    },
+    {
+        answer: "Stack Overflow answers"
+    },
+    {
+        answer: "Documentation"
+    },
+    {
+        answer: "Slack"
+    },
+    {
+        
     }
 
 ];
