@@ -1,11 +1,15 @@
 import React from "react";
+import {ROUTES} from "./Constants";
 import firebase from "firebase/app";
 import 'firebase/auth';
 
 export default class SignInView extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            currentUser: undefined,
+            userName: undefined
+        };
         firebase.auth().signInAnonymously();
     }
 
@@ -14,9 +18,7 @@ export default class SignInView extends React.Component {
             user => {
                 //do stuff
                 if (user) {
-                    let userID = user.uid;
-                    let ref = firebase.database().ref(`cards`);
-                    this.valueListener = ref.on("value", snapshot => this.setState({cardSnap: snapshot}));
+                    this.setState(user.uid);
                 }
     
             }
@@ -25,16 +27,33 @@ export default class SignInView extends React.Component {
 
     componentWillUnmount() {
         this.unlistenAuth();
-        this.state.tasksRef.off("value", this.valueListener);
+    }
+
+    handleSubmit() {
+        console.log(this.state.userName);
+        this.props.history.push(ROUTES.game);
     }
 
     render() {
         return(
-            <header className="jumbotron jumbotron-fluid bg-primary text-white">
-                <div className="container-fluid">
-                    <h1> Start a new game </h1>
-                </div>
-            </header>
+            <div>
+                <header className="jumbotron jumbotron-fluid bg-primary text-white">
+                    <div className="container-fluid">
+                        <h1> Start a new game </h1>
+                    </div>
+                </header>
+                <form onSubmit={evt => this.handleSubmit(evt)}>
+                    <div className="form-group">
+                        <label htmlFor="user-name">User Name</label>
+                        <input type="text"
+                            id="user-name"
+                            className="form-control"
+                            placeholder="your user name"
+                            onChange={event => this.setState({userName: event.target.value})}/>
+                    </div>
+                    <button type="submit" className="btn btn-primary mb-2">Submit</button>
+                </form>
+            </div>
         );
     }
 }
