@@ -50,16 +50,28 @@ export default class Game extends React.Component {
             indexes.push(i);
         }
         indexes = this.shuffle(indexes);
-        console.log(indexes);
-        let questionCardsRef = firebase.database().ref(`cards/white_cards`);
+        let answerCardsRef = firebase.database().ref(`cards/white_cards`);
         let i = 1;
-        questionCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
-            console.log(cardSnap);
-            console.log(indexes[i]);
+        answerCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
             cardSnap.ref.update({
                 index: indexes[i]
             })
             i++;
+            })
+        }); 
+
+        let qIndexes = [];
+        for(let j = 1; j < 56; j++) {
+            qIndexes.push(j);
+        }
+        qIndexes = this.shuffle(qIndexes);
+        let questionCardsRef = firebase.database().ref(`cards/black_cards`);
+        let j = 1;
+        questionCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
+                index: qIndexes[j]
+            })
+            j++;
             })
         }); 
     }
