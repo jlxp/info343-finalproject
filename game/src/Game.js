@@ -33,47 +33,36 @@ export default class Game extends React.Component {
         });
     }
 
-    // componentWillMount() {
-    //     this.shuffleCards();
-    // }
+    componentWillMount() {
+        this.shuffleCards();
+    }
   
-    // /** 
-    //  * Called when page is unmounted
-    // */
-    // componentWillUnmount() {
-    //     this.authUnlisten(); // stops listening for user events
-    // }
+    /** 
+     * Called when page is unmounted
+    */
+    componentWillUnmount() {
+        this.authUnlisten(); // stops listening for user events
+    }
 
-    // shuffleCards() {
-    //     let indexes = [];
-    //     for(let i = 1; i < 214; i++) {
-    //         indexes.push(i);
-    //     }
-    //     indexes = this.shuffle(indexes);
-    //     console.log(indexes);
-    //     let questionCardsRef = firebase.database().ref(`cards/white_cards`);
-    //     let i = 1;
-    //     questionCardsRef.on("value", snapshot => {snapshot.forEach(cardSnap => {
-    //         cardSnap.ref.update({
-    //             index: indexes[i]
-    //         })
-    //         console.log(i);
-    //         i++;
-    //         })
-    //     }); 
-    // }
-
-    // handleClick(curDone) {
-    //     //TODO: update the `done` property of the task;
-    //     //updates must be done through the ref,
-    //     //but remember that you can get the ref for
-    //     //a snapshot by accessing the snapshot's .ref
-    //     //property
-    //     let ref = this.props.taskSnap.ref;
-    //     ref.update({ //only updates parts you specify
-    //         done: !curDone
-    //     });
-    // }
+    shuffleCards() {
+        let indexes = [];
+        for(let i = 1; i < 215; i++) {
+            indexes.push(i);
+        }
+        indexes = this.shuffle(indexes);
+        console.log(indexes);
+        let questionCardsRef = firebase.database().ref(`cards/white_cards`);
+        let i = 1;
+        questionCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            console.log(cardSnap);
+            console.log(indexes[i]);
+            cardSnap.ref.update({
+                index: indexes[i]
+            })
+            i++;
+            })
+        }); 
+    }
 
 
     /**
