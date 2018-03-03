@@ -1,5 +1,6 @@
 import React from "react";
 import firebase from "firebase/app";
+import 'firebase/auth';
 
 export default class SignInView extends React.Component {
     constructor(props) {
@@ -9,7 +10,7 @@ export default class SignInView extends React.Component {
     }
 
     componentDidMount() {
-        this.unlistenAuth = firebase.auth.onAuthStateChanged(
+        this.unlistenAuth = firebase.auth().onAuthStateChanged(
             user => {
                 //do stuff
                 if (user) {
@@ -29,7 +30,7 @@ export default class SignInView extends React.Component {
 
     render() {
         return(
-            <header className="jumbotron jumbotron-fluid">
+            <header className="jumbotron jumbotron-fluid bg-primary text-white">
                 <div className="container-fluid">
                     <h1> Start a new game </h1>
                 </div>
