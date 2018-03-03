@@ -2,13 +2,15 @@ import React from "react";
 import {ROUTES} from "./Constants";
 import firebase from "firebase/app";
 import 'firebase/auth';
+import 'firebase/database';
 
 export default class SignInView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentUser: undefined,
-            userName: undefined
+            userName: undefined,
+            userRef: undefined
         };
         firebase.auth().signInAnonymously();
     }
@@ -18,7 +20,10 @@ export default class SignInView extends React.Component {
             user => {
                 //do stuff
                 if (user) {
-                    this.setState(user.uid);
+                    this.setState({currentUser:user.uid});
+                    
+                    // this.valueListener = ref.on("value", snapshot => this.setState({cardSnap: snapshot}));
+                    //this.state.userRef = ref;
                 }
     
             }
@@ -27,10 +32,19 @@ export default class SignInView extends React.Component {
 
     componentWillUnmount() {
         this.unlistenAuth();
+        // this.state.tasksRef.off("value", this.valueListener);
     }
 
-    handleSubmit() {
+    handleSubmit(evt) {
+        evt.preventDefault();
         console.log(this.state.userName);
+        let userRef = firebase.database().ref(`users`);
+        let player = {
+            uid: this.state.currentUser,
+            displayName: this.state.userName
+        }
+        console.log("A");
+        userRef.push(player);
         this.props.history.push(ROUTES.game);
     }
 
@@ -51,7 +65,7 @@ export default class SignInView extends React.Component {
                             placeholder="your user name"
                             onChange={event => this.setState({userName: event.target.value})}/>
                     </div>
-                    <button type="submit" className="btn btn-primary mb-2">Submit</button>
+                    <button className="btn btn-primary mb-2">Submit</button>
                 </form>
             </div>
         );
