@@ -8,8 +8,11 @@ export default class CardHand extends React.Component {
         if(!this.props.whiteCardsRef) {
             return <p>loading cards...</p>
         }
-        this.props.whiteCardsRef.limitToFirst(5).on("value", snapshot => {snapshot.forEach(cardSnap => {
-            cards.push(<Card key={cardSnap.key} cardSnap={cardSnap} />)
+        this.props.whiteCardsRef.on("value", snapshot => {snapshot.forEach(cardSnap => {
+            let card = cardSnap.val();
+            if (card.index < 6) {
+                cards.push(<Card key={cardSnap.key} cardSnap={cardSnap} />)
+            }
             })
         });
         return (
