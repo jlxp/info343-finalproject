@@ -41,7 +41,8 @@ export default class SignInView extends React.Component {
         let userRef = firebase.database().ref(`users`);
         let player = {
             uid: this.state.currentUser,
-            displayName: this.state.userName
+            displayName: this.state.userName,
+            points: 0
         }
         console.log("A");
         userRef.push(player);
