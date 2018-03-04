@@ -9,12 +9,12 @@ import 'firebase/database';
 
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyBcE7abhopPObG3j7pvwtWSiQ5ai9_h7o4",
-    authDomain: "finalproject-game.firebaseapp.com",
-    databaseURL: "https://finalproject-game.firebaseio.com",
-    projectId: "finalproject-game",
-    storageBucket: "",
-    messagingSenderId: "914720479546"
+    apiKey: "AIzaSyCCCFBRGRMbkkQ2v_D1Za5hcoITcbDF6JU",
+    authDomain: "cah-online-70115.firebaseapp.com",
+    databaseURL: "https://cah-online-70115.firebaseio.com",
+    projectId: "cah-online-70115",
+    storageBucket: "cah-online-70115.appspot.com",
+    messagingSenderId: "487758224411"
   };
   firebase.initializeApp(config);
 

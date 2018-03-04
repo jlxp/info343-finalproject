@@ -11,7 +11,8 @@ export default class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            x: undefined
+            x: undefined,
+            userID: undefined
         }
     }
 
@@ -40,9 +41,9 @@ export default class Game extends React.Component {
     // /** 
     //  * Called when page is unmounted
     // */
-    // componentWillUnmount() {
-    //     this.authUnlisten(); // stops listening for user events
-    // }
+    componentWillUnmount() {
+        this.authUnlisten(); // stops listening for user events
+    }
 
     // shuffleCards() {
     //     let indexes = [];
