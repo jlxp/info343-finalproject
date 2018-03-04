@@ -13,7 +13,10 @@ export default class CardHand extends React.Component {
             return <p>loading question...</p>
         }
 
-        let currQuestionIndex = 1; //WE SHOULD CHANGE THIS LATER
+        // Right now I was testing it just getting the first index, I think this can be the
+        // same for everyone and just controlled in state and then incrimented somewhere
+        // or controlled as a variable in firebase - idk what is easier or more doable! 
+        let currQuestionIndex = 1; 
 
         let question;
         this.props.blackCardRef.once("value", snapshot => {snapshot.forEach(cardSnap => {

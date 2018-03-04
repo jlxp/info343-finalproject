@@ -26,7 +26,6 @@ export default class Game extends React.Component {
                 this.valueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot}));
                 this.setState({whiteCardsRef: white_ref});
                 let black_ref = firebase.database().ref(`cards/black_cards`);
-                //this.valueListener = black_ref.on("value", snapshot => this.setState({blackCardsSnap: snapshot}));
                 this.setState({blackCardRef: black_ref});
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);

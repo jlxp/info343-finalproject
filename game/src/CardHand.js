@@ -10,6 +10,11 @@ export default class CardHand extends React.Component {
         }
         this.props.whiteCardsRef.on("value", snapshot => {snapshot.forEach(cardSnap => {
             let card = cardSnap.val();
+            // Right now this is just getting the first 5 cards, mimicing the first user. I think
+            // either we should make an array of card indexes that correspond with each player or figure
+            // out the math that goes along with the index assignments or have a current index in the state
+            // or something. Just some ideas! But just this if statement below is what we will need to change
+            // I believe! So hopefully this helps get started
             if (card.index < 6) {
                 cards.push(<Card key={cardSnap.key} cardSnap={cardSnap} />)
             }
