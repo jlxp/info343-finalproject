@@ -4,9 +4,6 @@ import './App.css';
 import {ROUTES} from "./Constants";
 import SignInView from "./SignIn";
 import GameView from "./Game";
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/database';
 
 class App extends Component {
   render() {

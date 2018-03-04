@@ -23,9 +23,10 @@ export default class Game extends React.Component {
             if(user) { // if a user is signed in
                 this.setState({userID: user.uid});
                 let white_ref = firebase.database().ref(`cards/white_cards`);
-                this.valueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot})); // listens for new messages
+                this.valueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot}));
                 this.setState({whiteCardsRef: white_ref});
-                let black_ref = firebase.database().ref('cards/black_cards');
+                let black_ref = firebase.database().ref(`cards/black_cards`);
+                //this.valueListener = black_ref.on("value", snapshot => this.setState({blackCardsSnap: snapshot}));
                 this.setState({blackCardRef: black_ref});
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);
@@ -33,47 +34,59 @@ export default class Game extends React.Component {
         });
     }
 
-    // componentWillMount() {
-    //     this.shuffleCards();
-    // }
+    componentWillMount() {
+        this.shuffleCards();
+    }
   
-    // /** 
-    //  * Called when page is unmounted
-    // */
-    // componentWillUnmount() {
-    //     this.authUnlisten(); // stops listening for user events
-    // }
+    /** 
+     * Called when page is unmounted
+    */
+    componentWillUnmount() {
+        this.authUnlisten(); // stops listening for user events
+    }
 
-    // shuffleCards() {
-    //     let indexes = [];
-    //     for(let i = 1; i < 214; i++) {
-    //         indexes.push(i);
-    //     }
-    //     indexes = this.shuffle(indexes);
-    //     console.log(indexes);
-    //     let questionCardsRef = firebase.database().ref(`cards/white_cards`);
-    //     let i = 1;
-    //     questionCardsRef.on("value", snapshot => {snapshot.forEach(cardSnap => {
-    //         cardSnap.ref.update({
-    //             index: indexes[i]
-    //         })
-    //         console.log(i);
-    //         i++;
-    //         })
-    //     }); 
-    // }
+    shuffleCards() {
+        let indexes = [];
+        for(let i = 1; i < 214; i++) {
+            indexes.push(i);
+        }
+        indexes = this.shuffle(indexes);
+        let answerCardsRef = firebase.database().ref(`cards/white_cards`);
+        let i = 0;
+        answerCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
+                index: indexes[i]
+            })
+            i++;
+            })
+        }); 
 
-    // handleClick(curDone) {
-    //     //TODO: update the `done` property of the task;
-    //     //updates must be done through the ref,
-    //     //but remember that you can get the ref for
-    //     //a snapshot by accessing the snapshot's .ref
-    //     //property
-    //     let ref = this.props.taskSnap.ref;
-    //     ref.update({ //only updates parts you specify
-    //         done: !curDone
-    //     });
-    // }
+        let qIndexes = [];
+        for(let j = 1; j < 55; j++) {
+            qIndexes.push(j);
+        }
+        qIndexes = this.shuffle(qIndexes);
+        let questionCardsRef = firebase.database().ref(`cards/black_cards`);
+        let j = 0;
+        questionCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
+                index: qIndexes[j]
+            })
+            j++;
+            })
+        }); 
+
+        let zIndexes = [1, 2, 3, 4];
+        let playersRef = firebase.database().ref(`users`);
+        let z = 0;
+        playersRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
+                index: zIndexes[z]
+            })
+            z++;
+            })
+        }); 
+    }
 
 
     /**
@@ -116,15 +129,3 @@ export default class Game extends React.Component {
         );
     }
 }
-
-// handleClick(curDone) {
-//     //TODO: update the `done` property of the task;
-//     //updates must be done through the ref,
-//     //but remember that you can get the ref for
-//     //a snapshot by accessing the snapshot's .ref
-//     //property
-//     let ref = this.props.taskSnap.ref;
-//     ref.update({ //only updates parts you specify
-//         done: !curDone
-//     });
-// }

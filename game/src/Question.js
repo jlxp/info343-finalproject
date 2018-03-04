@@ -12,19 +12,25 @@ export default class CardHand extends React.Component {
         if(!this.props.blackCardRef) {
             return <p>loading question...</p>
         }
-        // We are going to have to decide how to index things and change limit value!!
-/*         this.props.blackCardRef.limitToFirst(1).on("value", snapshot => {snapshot.forEach(cardSnap => {
-            let question = cardSnap.val();
-            console.log("A: " + question);
-            this.setState({questionText: question.question});
-            })
-        }); */
-        
+
+        let currQuestionIndex = 1; //WE SHOULD CHANGE THIS LATER
+
+        let question;
+        this.props.blackCardRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            let card = cardSnap.val();
+            if(card.index === currQuestionIndex) {
+                console.log("got here");
+                this.setState({questionText: card.question})
+            }
+            return false;
+        })})
+
         return (
             <div className="black-card">
-                {/* {this.state.questionText} */}
+                {this.state.questionText}
             </div>
         );
     }
 }
+
 
