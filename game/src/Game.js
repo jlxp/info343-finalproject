@@ -80,10 +80,19 @@ export default class Game extends React.Component {
         let zIndexes = [1, 2, 3, 4];
         let playersRef = firebase.database().ref(`users`);
         let z = 0;
-        playersRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
-            cardSnap.ref.update({
+        playersRef.once("value", snapshot => {snapshot.forEach(personSnap => {
+            personSnap.ref.update({
                 index: zIndexes[z]
             })
+            if(z === 0) {
+                personSnap.ref.update({
+                    questionAsker: true
+                })
+            } else {
+                personSnap.ref.update({
+                    questionAsker: false
+                })
+            }
             z++;
             })
         }); 

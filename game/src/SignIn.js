@@ -48,13 +48,16 @@ export default class SignInView extends React.Component {
             this.state.userRef.push(player);
             this.state.players++;
             console.log(this.state.userSnap.numChildren());
-            if (this.state.userSnap.numChildren() === 3) {
-                this.props.history.push(ROUTES.game);
-            }
         }
     }
 
     render() {
+        if(this.state.userSnap) {
+            if (this.state.userSnap.numChildren() === 4) {
+                this.props.history.push(ROUTES.game);
+            }
+        }
+
         let playersNames = [];
         if (this.state.userSnap) {
             this.state.userSnap.forEach(user => {
@@ -62,8 +65,10 @@ export default class SignInView extends React.Component {
             });
         }
         let waiting = null;
-        if (this.state.userSnap.numChildren() === 3) {
-            waiting = <div> waiting for more players to join...</div>;
+        if(this.state.userSnap) {
+            if (this.state.userSnap.numChildren() === 3) {
+                waiting = <div> waiting for more players to join...</div>;
+            }
         }
 
         return(

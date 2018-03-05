@@ -1,6 +1,7 @@
 import React from "react";
 import Card from './Card';
 import firebase from "firebase/app";
+import AnswerCard from './AnswerCard.js';
 
 export default class Answers extends React.Component {
     constructor(props) {
@@ -36,7 +37,7 @@ export default class Answers extends React.Component {
                         snapshot.forEach(cardSnap => {
                             let card = cardSnap.val();
                             if(responses.includes(card.index)) {
-                                cardsArr.push(<Card key={cardSnap.key} cardSnap={cardSnap} />)
+                                cardsArr.push(<AnswerCard key={cardSnap.key} cardSnap={cardSnap} />)
                             }
                         })
                         this.setState({cards: cardsArr});

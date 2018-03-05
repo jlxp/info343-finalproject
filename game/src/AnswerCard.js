@@ -12,7 +12,7 @@ export default class Card extends React.Component {
         firebase.database().ref(`users`).once("value", snapshot => {
             snapshot.forEach(userSnap => {
                 let user = userSnap.val();
-                if (user.index === this.props.usedIndex) {
+                if (user.uid === this.props.userID) {
                     this.setState({questionAsker: user.questionAsker})
                 }
             })
@@ -20,12 +20,9 @@ export default class Card extends React.Component {
     }
 
     handleClick(evt, num) {
-        if(!this.state.questionAsker || !this.state.answered) {
+        if(this.state.questionAsker) {
             evt.preventDefault();
-            this.setState({answered: true});
-            let ref = firebase.database().ref(`gameState/currResponses`);
-            ref.push({index: num})
-                .catch(err => this.setState({fbError: err}));
+            console.log("Clicked card");
         }
     }
 

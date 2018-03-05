@@ -22,7 +22,7 @@ export default class CardHand extends React.Component {
                         snapshot.forEach(cardSnap => {
                             let card = cardSnap.val();
                             if (card.index < (this.state.userIndex * 5 + 1) && (card.index > ((this.state.userIndex - 1) * 5))) {
-                                cardsArr.push(<Card key={cardSnap.key} cardSnap={cardSnap} />)
+                                cardsArr.push(<Card key={cardSnap.key} cardSnap={cardSnap} userIndex={this.state.userIndex}/>)
                             }
                         });
                         this.setState({cards: cardsArr});
