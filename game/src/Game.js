@@ -3,6 +3,7 @@ import {ROUTES} from "./Constants";
 import firebase from "firebase/app";
 import CardHand from './CardHand';
 import Question from './Question';
+import Answers from './Answers';
 import "firebase/auth";
 import 'firebase/database';
 import './index.css';
@@ -21,12 +22,9 @@ export default class Game extends React.Component {
     componentDidMount() {
         this.authUnlisten = firebase.auth().onAuthStateChanged(user => {
             if(user) { // if a user is signed in
-                this.setState({userID: user.uid});
                 let white_ref = firebase.database().ref(`cards/white_cards`);
-                this.valueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot}));
+                this.setState({userID: user.uid});
                 this.setState({whiteCardsRef: white_ref});
-                let black_ref = firebase.database().ref(`cards/black_cards`);
-                this.setState({blackCardRef: black_ref});
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);
             }
@@ -34,9 +32,13 @@ export default class Game extends React.Component {
     }
 
     componentWillMount() {
+        let ref = firebase.database().ref(`gameState`);
+        this.setState({stateRef: ref});
+        ref.update({currQuestionIndex: 1, currAnswerIndex:21})
+            .catch(err => this.setState({fbError: err}));
         this.shuffleCards();
     }
-  
+
     /** 
      * Called when page is unmounted
     */
@@ -116,13 +118,14 @@ export default class Game extends React.Component {
                 </div>
                 <div id="card-container" className="container row">
                     <div id="question-card" className="col">
-                        <Question blackCardRef={this.state.blackCardRef}/>
+                        <Question stateRef={this.state.stateRef}/>
                     </div>
                     <div id="answer-cards" className="col">
+                        <Answers whiteCardsRef={this.state.whiteCardsRef} />
                     </div>
                 </div>
                 <div id="player-hand" className="m-5 justify-content-center">
-                    <CardHand whiteCardsRef={this.state.whiteCardsRef}/>
+                    <CardHand whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID}/>
                 </div>
             </div>
         );

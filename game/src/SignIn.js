@@ -43,7 +43,6 @@ export default class SignInView extends React.Component {
             uid: this.state.currentUser,
             displayName: this.state.userName
         }
-        console.log("A");
         userRef.push(player);
         this.props.history.push(ROUTES.game);
     }
