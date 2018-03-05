@@ -1,20 +1,44 @@
 import React from "react";
-import Card from './Card'
+import Card from './Card';
+import firebase from "firebase/app";
+
 
 export default class CardHand extends React.Component {
-    render() {
-        let cards = [];
+    constructor(props) {
+        super(props);
+        this.state = {
+            cards: []
+        }
+    }
 
-        if(!this.props.whiteCardsRef) {
+    componentWillMount() {
+        firebase.database().ref(`users`).once("value", snapshot => {
+            snapshot.forEach(userSnap => {
+                let user = userSnap.val();
+                if (user.uid === this.props.userID) {
+                    this.setState({ userIndex: user.index })
+                    this.props.whiteCardsRef.on("value", snapshot => {
+                        let cardsArr = [];
+                        snapshot.forEach(cardSnap => {
+                            let card = cardSnap.val();
+                            if (card.index < (this.state.userIndex * 5 + 1) && (card.index > ((this.state.userIndex - 1) * 5))) {
+                                cardsArr.push(<Card key={cardSnap.key} cardSnap={cardSnap} />)
+                            }
+                        });
+                        this.setState({cards: cardsArr});
+                    });
+                }
+            })
+        })
+    }
+
+    render() {
+        if (!this.props.whiteCardsRef) {
             return <p>loading cards...</p>
         }
-        this.props.whiteCardsRef.limitToFirst(5).on("value", snapshot => {snapshot.forEach(cardSnap => {
-            cards.push(<Card key={cardSnap.key} cardSnap={cardSnap} />)
-            })
-        });
         return (
             <div id="card-list" className="container row justify-content-center">
-                {cards}
+                {this.state.cards}
             </div>
         );
     }

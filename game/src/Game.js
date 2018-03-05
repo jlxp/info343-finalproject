@@ -3,6 +3,7 @@ import {ROUTES} from "./Constants";
 import firebase from "firebase/app";
 import CardHand from './CardHand';
 import Question from './Question';
+import Answers from './Answers';
 import "firebase/auth";
 import 'firebase/database';
 import './index.css';
@@ -22,59 +23,72 @@ export default class Game extends React.Component {
     componentDidMount() {
         this.authUnlisten = firebase.auth().onAuthStateChanged(user => {
             if(user) { // if a user is signed in
-                this.setState({userID: user.uid});
                 let white_ref = firebase.database().ref(`cards/white_cards`);
-                this.valueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot})); // listens for new messages
+                this.setState({userID: user.uid});
                 this.setState({whiteCardsRef: white_ref});
-                let black_ref = firebase.database().ref('cards/black_cards');
-                this.setState({blackCardRef: black_ref});
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);
             }
         });
     }
 
-    // componentWillMount() {
-    //     this.shuffleCards();
-    // }
-  
-    // /** 
-    //  * Called when page is unmounted
-    // */
+    componentWillMount() {
+        let ref = firebase.database().ref(`gameState`);
+        this.setState({stateRef: ref});
+        ref.update({currQuestionIndex: 1, currAnswerIndex:21})
+            .catch(err => this.setState({fbError: err}));
+        this.shuffleCards();
+    }
+
+    /** 
+     * Called when page is unmounted
+    */
     componentWillUnmount() {
         this.authUnlisten(); // stops listening for user events
     }
 
-    // shuffleCards() {
-    //     let indexes = [];
-    //     for(let i = 1; i < 214; i++) {
-    //         indexes.push(i);
-    //     }
-    //     indexes = this.shuffle(indexes);
-    //     console.log(indexes);
-    //     let questionCardsRef = firebase.database().ref(`cards/white_cards`);
-    //     let i = 1;
-    //     questionCardsRef.on("value", snapshot => {snapshot.forEach(cardSnap => {
-    //         cardSnap.ref.update({
-    //             index: indexes[i]
-    //         })
-    //         console.log(i);
-    //         i++;
-    //         })
-    //     }); 
-    // }
+    shuffleCards() {
+        let indexes = [];
+        for(let i = 1; i < 214; i++) {
+            indexes.push(i);
+        }
+        indexes = this.shuffle(indexes);
+        let answerCardsRef = firebase.database().ref(`cards/white_cards`);
+        let i = 0;
+        answerCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
+                index: indexes[i]
+            })
+            i++;
+            })
+        }); 
 
-    // handleClick(curDone) {
-    //     //TODO: update the `done` property of the task;
-    //     //updates must be done through the ref,
-    //     //but remember that you can get the ref for
-    //     //a snapshot by accessing the snapshot's .ref
-    //     //property
-    //     let ref = this.props.taskSnap.ref;
-    //     ref.update({ //only updates parts you specify
-    //         done: !curDone
-    //     });
-    // }
+        let qIndexes = [];
+        for(let j = 1; j < 55; j++) {
+            qIndexes.push(j);
+        }
+        qIndexes = this.shuffle(qIndexes);
+        let questionCardsRef = firebase.database().ref(`cards/black_cards`);
+        let j = 0;
+        questionCardsRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
+                index: qIndexes[j]
+            })
+            j++;
+            })
+        }); 
+
+        let zIndexes = [1, 2, 3, 4];
+        let playersRef = firebase.database().ref(`users`);
+        let z = 0;
+        playersRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
+                index: zIndexes[z]
+            })
+            z++;
+            })
+        }); 
+    }
 
 
     /**
@@ -105,27 +119,16 @@ export default class Game extends React.Component {
                 </div>
                 <div id="card-container" className="container row">
                     <div id="question-card" className="col">
-                        <Question blackCardRef={this.state.blackCardRef}/>
+                        <Question stateRef={this.state.stateRef}/>
                     </div>
                     <div id="answer-cards" className="col">
+                        <Answers whiteCardsRef={this.state.whiteCardsRef} />
                     </div>
                 </div>
                 <div id="player-hand" className="m-5 justify-content-center">
-                    <CardHand whiteCardsRef={this.state.whiteCardsRef}/>
+                    <CardHand whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID}/>
                 </div>
             </div>
         );
     }
 }
-
-// handleClick(curDone) {
-//     //TODO: update the `done` property of the task;
-//     //updates must be done through the ref,
-//     //but remember that you can get the ref for
-//     //a snapshot by accessing the snapshot's .ref
-//     //property
-//     let ref = this.props.taskSnap.ref;
-//     ref.update({ //only updates parts you specify
-//         done: !curDone
-//     });
-// }

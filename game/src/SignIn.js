@@ -10,7 +10,10 @@ export default class SignInView extends React.Component {
         this.state = {
             currentUser: undefined,
             userName: undefined,
+<<<<<<< HEAD
             userSnap: undefined,
+=======
+>>>>>>> render-cards
             userRef: undefined
         };
         firebase.auth().signInAnonymously();
@@ -22,9 +25,15 @@ export default class SignInView extends React.Component {
                 //do stuff
                 if (user) {
                     this.setState({currentUser:user.uid});
+<<<<<<< HEAD
                     let ref = firebase.database().ref(`users`);
                     this.valueListener = ref.on("value", snapshot => this.setState({userSnap: snapshot}));
                     this.state.userRef = ref;
+=======
+                    
+                    // this.valueListener = ref.on("value", snapshot => this.setState({cardSnap: snapshot}));
+                    //this.state.userRef = ref;
+>>>>>>> render-cards
                 }
     
             }
@@ -33,10 +42,15 @@ export default class SignInView extends React.Component {
 
     componentWillUnmount() {
         this.unlistenAuth();
+<<<<<<< HEAD
+=======
+        // this.state.tasksRef.off("value", this.valueListener);
+>>>>>>> render-cards
     }
 
     handleSubmit(evt) {
         evt.preventDefault();
+<<<<<<< HEAD
         if (this.state.userName !== undefined) {
             console.log(this.state.userName);
             let player = {
@@ -66,12 +80,28 @@ export default class SignInView extends React.Component {
             waiting = <div> waiting for more players to join...</div>;
         }
 
+=======
+        console.log(this.state.userName);
+        let userRef = firebase.database().ref(`users`);
+        let player = {
+            uid: this.state.currentUser,
+            displayName: this.state.userName
+        }
+        userRef.push(player);
+        this.props.history.push(ROUTES.game);
+    }
+
+    render() {
+>>>>>>> render-cards
         return(
             <div>
                 <header className="jumbotron jumbotron-fluid bg-primary text-white">
                     <div className="container-fluid">
                         <h1> Start a new game </h1>
+<<<<<<< HEAD
                         <h6> you must have 4 players to start the game </h6>
+=======
+>>>>>>> render-cards
                     </div>
                 </header>
                 <form onSubmit={evt => this.handleSubmit(evt)}>
@@ -85,14 +115,15 @@ export default class SignInView extends React.Component {
                     </div>
                     <button className="btn btn-primary mb-2">Submit</button>
                 </form>
+<<<<<<< HEAD
                 <div>
                     <h2>Current Players</h2>
                     {playersNames}
                     {waiting}
                 </div>
+=======
+>>>>>>> render-cards
             </div>
         );
     }
 }
-
-
