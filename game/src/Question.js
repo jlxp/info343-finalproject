@@ -1,12 +1,14 @@
 import React from "react";
 import firebase from "firebase/app";
+import GameEnd from "./GameEnd";
 
 
 export default class CardHand extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            questionText: undefined
+            questionText: undefined,
+            end: undefined
         }
     }
 
@@ -21,12 +23,16 @@ export default class CardHand extends React.Component {
                 }
             })})
         })
+        this.setState({end: <GameEnd />});
     }
 
     render() {
         return (
-            <div className="black-card">
-                {this.state.questionText}
+            <div>
+                <div className="black-card">
+                    {this.state.questionText}
+                </div>
+                {this.state.end}
             </div>
         );
     }

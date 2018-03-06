@@ -1,11 +1,14 @@
 import React from "react";
 import firebase from "firebase/app";
+import GameEnd from "./GameEnd";
 
 
 export default class AnswerCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            end: undefined
+        }
     }
 
     componentWillMount() {
@@ -67,8 +70,7 @@ export default class AnswerCard extends React.Component {
                 }
             })
         })
-
-        //this.state.questionAskerIndex + 1
+        firebase.database().ref(`gameState/currResponses`).remove();
     }
 
     render() {

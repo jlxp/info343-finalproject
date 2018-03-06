@@ -17,15 +17,21 @@ export default class CardHand extends React.Component {
                 let user = userSnap.val();
                 if (user.uid === this.props.userID) {
                     this.setState({ userIndex: user.index })
+                    let currHand = [];
+                    let obj = user.cards;
+                    for(let prop in obj) {
+                        currHand.push(obj[prop]);
+                    }
+                    console.log("current hand: " + currHand);
                     this.props.whiteCardsRef.on("value", snapshot => {
                         let cardsArr = [];
                         snapshot.forEach(cardSnap => {
                             let card = cardSnap.val();
-                            if (card.index < (this.state.userIndex * 5 + 1) && (card.index > ((this.state.userIndex - 1) * 5))) {
+                            if(currHand.includes(card.index)) {
                                 cardSnap.ref.update({
                                     playerIndex: this.state.userIndex
                                 })
-                                cardsArr.push(<Card key={cardSnap.key} cardSnap={cardSnap} userIndex={this.state.userIndex}/>)
+                                cardsArr.push(<Card key={cardSnap.key} userID={this.props.userID} whiteCardsRef={this.props.whiteCardsRef} cardSnap={cardSnap} userIndex={this.state.userIndex}/>)
                             }
                         });
                         this.setState({cards: cardsArr});

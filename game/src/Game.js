@@ -45,6 +45,7 @@ export default class Game extends React.Component {
     */
     componentWillUnmount() {
         this.authUnlisten(); // stops listening for user events
+        firebase.database().ref(`users`).remove();
     }
 
     shuffleCards() {
@@ -94,6 +95,15 @@ export default class Game extends React.Component {
                     questionAsker: false
                 })
             }
+            personSnap.ref.update({
+                cards: {
+                    card1: (z * 5) + 1,
+                    card2: (z * 5) + 2,
+                    card3: (z * 5) + 3,
+                    card4: (z * 5) + 4,
+                    card5: (z * 5) + 5
+                }
+            })
             z++;
             })
         }); 

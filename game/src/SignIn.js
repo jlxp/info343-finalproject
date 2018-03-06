@@ -42,7 +42,8 @@ export default class SignInView extends React.Component {
             let player = {
                 uid: this.state.currentUser,
                 displayName: this.state.userName,
-                points: 0
+                points: 0,
+                cards: {}
             }
             console.log("A");
             this.state.userRef.push(player);
