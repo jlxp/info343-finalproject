@@ -1,6 +1,7 @@
 import React from "react";
 import firebase from "firebase/app";
 import GameEnd from "./GameEnd";
+import Answers from "./Answers";
 
 
 export default class AnswerCard extends React.Component {
@@ -32,21 +33,21 @@ export default class AnswerCard extends React.Component {
 
     handleClick(evt, num) {
         evt.preventDefault();
-        if(this.state.questionAsker) {
-            let playerIndex = this.props.cardSnap.val().playerIndex;
-            firebase.database().ref(`users`).once("value", snapshot => {
-                snapshot.forEach(userSnap => {
-                    let user = userSnap.val();
-                    if(user.index === playerIndex) {
-                        let currPoints = user.points;
-                        currPoints++;
-                        userSnap.ref.update({
-                            points: currPoints
-                        })
-                    }
-                })
+        let playerIndex = this.props.playerIndex;
+        console.log("current player index:", playerIndex);
+        firebase.database().ref(`users`).once("value", snapshot => {
+            snapshot.forEach(userSnap => {
+                let user = userSnap.val();
+                if(user.index === playerIndex) {
+                    let uid = user.uid;
+                    let currPoints = user.points;
+                    currPoints++;
+                    firebase.database().ref(`users/${uid}/points`).set(currPoints);
+                }
             })
-        }
+        })
+        // if(this.state.questionAsker) {
+        // }
         firebase.database().ref(`users`).once("value", snapshot => {
             snapshot.forEach(userSnap => {
                 let user = userSnap.val();
@@ -63,7 +64,6 @@ export default class AnswerCard extends React.Component {
                 let user = userSnap.val();
                 console.log(this.state.nextQuestionAskerIndex);
                 if(user.index === this.state.nextQuestionAskerIndex) {
-                    console.log("should be updating question asker");
                     userSnap.ref.update({
                         questionAsker: true
                     })
@@ -71,13 +71,14 @@ export default class AnswerCard extends React.Component {
             })
         })
         firebase.database().ref(`gameState/currResponses`).remove();
+        this.props.clearCards();
     }
 
     render() {
-        let answer = this.props.cardSnap.val();
+        let answer = this.props.answer;
         return (
             <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index)}>
-                {answer.answer}
+                {answer}
             </div>
         );
     }

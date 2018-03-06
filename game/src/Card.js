@@ -17,71 +17,71 @@ export default class Card extends React.Component {
                 let user = userSnap.val();
                 if (user.index === this.props.userIndex) {
                     this.setState({questionAsker: user.questionAsker})
+                    this.setState({uid: user.uid})
                 }
             })
         })
+        this.setState({card: this.props.cardSnap.val()})
     }
 
     handleClick(evt, num) {
         evt.preventDefault();
         if(!this.state.questionAsker) {
             if(this.state.answers < 1) {
-                //console.log(this.state.answers);
-                //let curr = 1;
                 this.state.answers++;
-                //this.setState({answers: curr});
                 let ref = firebase.database().ref(`gameState/currResponses`);
-                ref.push({index: num})
+                ref.push({card: this.state.card}) // pass card data
                     .catch(err => this.setState({fbError: err}));
             }
+            firebase.database().ref(`gameState/currAnswerIndex`).once("value", snapshot => {
+                let currNextIndex = snapshot.val();
+                firebase.database().ref(`users`).once("value", snapshot => {
+                    snapshot.forEach(userSnap => {
+                        let i = 0;
+                        userSnap.child("cards").forEach(cardSnap => {
+                            i++;
+                            if(cardSnap.val() === num) {
+                                this.props.whiteCardsRef.once("value", cardSnapshot => {
+                                    cardSnapshot.forEach(whiteCardSnap => {
+                                        let whiteCard = whiteCardSnap.val();
+                                        if(whiteCard.index === currNextIndex) {
+                                            console.log("IN!");
+                                            let nextIndexCardSnap = whiteCardSnap;
+                                            let key = whiteCardSnap.key;
+                                            let currPlayerIndex = whiteCardSnap.val().playerIndex;
+                                            firebase.database().ref(`cards/white_cards/${key}/playerIndex`).set(this.props.userIndex);
+                                            let cardObj = {
+                                                userID: this.props.userID,
+                                                whiteCardsRef: this.props.whiteCardsRef,
+                                                cardSnap: nextIndexCardSnap,
+                                                userIndex: this.props.userIndex
+                                            }
+                                            this.props.replaceCardAtIndex(whiteCardSnap.val().index, cardObj);
+                                            let cardStr = "card" + i;
+                                            firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
+                                            let nextIndex = currNextIndex + 1;
+                                            firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
+                                        } 
+                                    })
+                                })
+
+                                // let cardStr = "card" + i;
+                                // console.log("card string: " + cardStr);
+                                // firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
+                            }
+                        })
+                    })
+                }) 
+                // let nextIndex = currNextIndex + 1;
+                // firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
+            });
         }
-        firebase.database().ref(`gameState/currAnswerIndex`).once("value", snapshot => {
-            let currNextIndex = snapshot.val();
-            firebase.database().ref(`users`).once("value", snapshot => {
-                snapshot.forEach(userSnap => {
-                    let user = userSnap.val();
-                    let obj = user.cards;
-                    for(let prop in obj) {
-                        if(obj[prop] === num) {
-                            console.log("got match");
-                            // userSnap.ref.update({
-                            //     prop: currNextIndex
-                            // });
-                            firebase.database().ref('users')
-                            prop: currNextIndex;
-                            <CardHand whiteCardsRef={this.props.whiteCardsRef} userID={this.props.userID}/>
-                            //update current answer index
-                        }
-                    }
-
-                    // for(let i = 1; i < user.cards.length; i++) {
-                    //     if(user.cards[i] === num) {
-                    //         console.log("got match");
-                    //         let str = "card" + i;
-                    //         console.log("Dot notation: " + user.cards.str);
-                    //         //user.cards.1 = currNextIndex;
-                    //         <CardHand whiteCardsRef={this.props.whiteCardsRef} userID={this.props.userID}/>
-                    //     }
-                    // }
-                })
-
-            })
-
-
-            // firebase.database().ref(`cards/white_cards`).on("value", snapshot => {
-            //     snapshot.forEach(cardSnap => {
-            //         let card = cardSnap.val();
-            //         if(card.index === currIndex) {
-            //             <Card key={this.props.key} cardSnap={cardSnap} userIndex={this.props.userIndex}/>
-            //         }
-            //     })
-            // })
-        })
     }
 
 
     render() {
         let answer = this.props.cardSnap.val();
+        console.log("ANSWER", answer);
         return (
             <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index)}>
                 {answer.answer}

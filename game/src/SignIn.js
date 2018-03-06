@@ -38,18 +38,17 @@ export default class SignInView extends React.Component {
     handleSubmit(evt) {
         evt.preventDefault();
         if (this.state.userName !== undefined) {
-            console.log(this.state.userName);
-            let player = {
+            let player = {[this.state.currentUser]: {
                 uid: this.state.currentUser,
                 displayName: this.state.userName,
                 points: 0,
                 cards: {}
-            }
-            console.log("A");
-            this.state.userRef.push(player);
+            }}
+            this.state.userRef.update(player);
             this.state.players++;
-            console.log(this.state.userSnap.numChildren());
         }
+
+
     }
 
     render() {

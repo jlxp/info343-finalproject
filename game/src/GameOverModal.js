@@ -29,9 +29,9 @@ class GameOverModal extends React.Component {
         return (
             <div>
                 <Modal isOpen={this.state.modal}>
-                <ModalBody>{this.props.winner} has won the game. Hooray!</ModalBody>
+                <ModalBody>{this.props.winner} has won the game. Thanks for playing!</ModalBody>
                 <ModalFooter>
-                    <Button onClick={evt => this.handleClick(evt)}>GTFO</Button>
+                    <Button onClick={evt => this.handleClick(evt)}>Play Again</Button>
                 </ModalFooter>
                 </Modal>
             </div>

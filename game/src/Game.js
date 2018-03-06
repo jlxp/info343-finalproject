@@ -45,12 +45,12 @@ export default class Game extends React.Component {
     */
     componentWillUnmount() {
         this.authUnlisten(); // stops listening for user events
-        firebase.database().ref(`users`).remove();
+        firebase.database().ref(`users`).remove(); //UNCOMMENT THIS LATER!!!!!!!
     }
 
     shuffleCards() {
         let indexes = [];
-        for(let i = 1; i < 214; i++) {
+        for(let i = 1; i < 213; i++) {
             indexes.push(i);
         }
         indexes = this.shuffle(indexes);
