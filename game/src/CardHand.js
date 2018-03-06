@@ -63,10 +63,11 @@ export default class CardHand extends React.Component {
         }
         console.log("curr state length", this.state.cards.length);
         let cardsArr = this.state.cards.splice(0); //Duplicate state
+        console.log("AT INDEX", cardsArr[index]); // this is undefined - so somehow index refernced here is not correct or something!
         cardsArr[index] = cardObj;
-        console.log("TAKE 1", this.state.cards);
+        //console.log("TAKE 1", this.state.cards);
         this.setState({cards: cardsArr})
-        console.log("TAKE 2", this.state.cards);
+        //console.log("TAKE 2", this.state.cards);
     }
 
     render() {
