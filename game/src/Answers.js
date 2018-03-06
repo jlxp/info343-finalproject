@@ -37,7 +37,7 @@ export default class Answers extends React.Component {
                         snapshot.forEach(cardSnap => {
                             let card = cardSnap.val();
                             if(responses.includes(card.index)) {
-                                cardsArr.push(<AnswerCard key={cardSnap.key} cardSnap={cardSnap} />)
+                                cardsArr.push(<AnswerCard key={cardSnap.key} cardSnap={cardSnap} userUID={this.props.userID}/>)
                             }
                         })
                         this.setState({cards: cardsArr});

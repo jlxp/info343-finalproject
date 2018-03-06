@@ -4,6 +4,7 @@ import firebase from "firebase/app";
 import CardHand from './CardHand';
 import Question from './Question';
 import Answers from './Answers';
+import GameEnd from './GameEnd';
 import "firebase/auth";
 import 'firebase/database';
 import './index.css';
@@ -130,7 +131,7 @@ export default class Game extends React.Component {
                         <Question stateRef={this.state.stateRef}/>
                     </div>
                     <div id="answer-cards" className="col">
-                        <Answers whiteCardsRef={this.state.whiteCardsRef} />
+                        <Answers whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID}/>
                     </div>
                 </div>
                 <div id="player-hand" className="m-5 justify-content-center">

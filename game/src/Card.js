@@ -5,14 +5,16 @@ import firebase from "firebase/app";
 export default class Card extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            answers: 0
+        };
     }
 
     componentWillMount() {
         firebase.database().ref(`users`).once("value", snapshot => {
             snapshot.forEach(userSnap => {
                 let user = userSnap.val();
-                if (user.index === this.props.usedIndex) {
+                if (user.index === this.props.userIndex) {
                     this.setState({questionAsker: user.questionAsker})
                 }
             })
@@ -20,13 +22,19 @@ export default class Card extends React.Component {
     }
 
     handleClick(evt, num) {
-        if(!this.state.questionAsker || !this.state.answered) {
-            evt.preventDefault();
-            this.setState({answered: true});
-            let ref = firebase.database().ref(`gameState/currResponses`);
-            ref.push({index: num})
-                .catch(err => this.setState({fbError: err}));
+        evt.preventDefault();
+        if(!this.state.questionAsker) {
+            if(this.state.answers < 1) {
+                console.log(this.state.answers);
+                //let curr = 1;
+                this.state.answers++;
+                //this.setState({answers: curr});
+                let ref = firebase.database().ref(`gameState/currResponses`);
+                ref.push({index: num})
+                    .catch(err => this.setState({fbError: err}));
+            }
         }
+        console.log("REPLACE PLAYED CARD");
     }
 
     render() {
