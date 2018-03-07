@@ -73,7 +73,7 @@ export default class SignInView extends React.Component {
 
         return(
             <div>
-                <header className="jumbotron jumbotron-fluid bg-primary text-white">
+                <header className="jumbotron jumbotron-fluid bg-info text-white">
                     <div className="container-fluid">
                         <h1> Start a new game </h1>
                         <h6> you must have 4 players to start the game </h6>

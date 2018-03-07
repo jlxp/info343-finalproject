@@ -12,7 +12,7 @@ export default class GameEnd extends React.Component {
     }
 
     componentWillMount() {
-        firebase.database().ref(`users`).once("value", snapshot => {
+        firebase.database().ref(`users`).on("value", snapshot => {
             snapshot.forEach(userSnap => {
                 let user = userSnap.val();
                 if (user.points > 4) {
