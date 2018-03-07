@@ -30,7 +30,14 @@ export default class Game extends React.Component {
                     console.log("snapshot:", snapshot.val())
                     this.setState({displayName: snapshot.val()})
                 })
-                console.log("name:" , this.state.displayName);
+                firebase.database().ref(`users/${this.state.userID}/points`).on("value", snapshot => {
+                    console.log("snapshot:", snapshot.val())
+                    this.setState({pointTotal: snapshot.val()})
+                })
+                // firebase.database().ref(`users/${this.state.userID}/questionAsker`).on("value", snapshot => {
+                //     console.log("snapshot:", snapshot.val())
+                //     this.setState({ifQuestionAsker: snapshot.val()})
+                // })
         
                 this.setState({whiteCardsRef: white_ref});
             } else { // if no user currently signed in
@@ -143,7 +150,10 @@ export default class Game extends React.Component {
                         <p className="lead">Cards Against Humanity game for Informatics students</p>
                     </div>
                 </div>
-                <h5 className="pl-5">Welcome, {this.state.displayName}!</h5>
+                <div className="container row">
+                    <h5 className="pl-5 col">Welcome, {this.state.displayName}!</h5>
+                    <h5 className="col">Current Points: {this.state.pointTotal}</h5>
+                </div>
                 <div id="card-container" className="container row">
                     <div id="question-card" className="col">
                         <Question stateRef={this.state.stateRef}/>
