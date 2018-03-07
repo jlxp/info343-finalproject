@@ -72,6 +72,15 @@ export default class AnswerCard extends React.Component {
         })
         firebase.database().ref(`gameState/currResponses`).remove();
         this.props.clearCards();
+        
+        let currQIRef = firebase.database().ref(`gameState/currQuestionIndex`);
+        let currQuestionIndex;
+        currQIRef.once("value", snapshot => {
+            currQuestionIndex = snapshot.val();
+        })
+        let nextIndex = currQuestionIndex + 1;
+        currQIRef.set(nextIndex);
+            
     }
 
     render() {

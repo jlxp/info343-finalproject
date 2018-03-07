@@ -25,6 +25,7 @@ export default class Game extends React.Component {
             if(user) { // if a user is signed in
                 let white_ref = firebase.database().ref(`cards/white_cards`);
                 this.setState({userID: user.uid});
+                //this.setState({displayName: user.displayName});
                 this.setState({whiteCardsRef: white_ref});
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);
@@ -136,6 +137,7 @@ export default class Game extends React.Component {
                         <p className="lead">Cards Against Humanity game for Informatics students</p>
                     </div>
                 </div>
+                <div>{console.log(this.state.displayName)}</div>
                 <div id="card-container" className="container row">
                     <div id="question-card" className="col">
                         <Question stateRef={this.state.stateRef}/>

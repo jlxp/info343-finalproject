@@ -30,7 +30,7 @@ export default class Answers extends React.Component {
             if(snapshot) {
                 snapshot.forEach(responseSnap => {
                     let card = responseSnap.val().card;
-                    console.log("CARD ANSWER", card.answer);
+                    // console.log("CARD ANSWER", card.answer);
                     cardsArr.push(<AnswerCard key={responseSnap.key} answer={card.answer} playerIndex={card.playerIndex} whiteCardsRef={this.props.whiteCardsRef} userUID={this.props.userID} clearCards={() => this.clearResponses()}/>)
 
                     //cardsArr.push(<AnswerCard key={responseSnap.key} cardSnap={card} whiteCardsRef={this.props.whiteCardsRef} userUID={this.props.userID} clearCards={() => this.clearResponses()}/>)
