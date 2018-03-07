@@ -34,7 +34,13 @@ export default class AnswerCard extends React.Component {
     handleClick(evt, num) {
         evt.preventDefault();
         let playerIndex = this.props.playerIndex;
-        console.log("current player index:", playerIndex);
+        let currQIRef = firebase.database().ref(`gameState/currQuestionIndex`);
+        let currQuestionIndex;
+        currQIRef.once("value", snapshot => {
+            currQuestionIndex = snapshot.val();
+        })
+        let nextIndex = currQuestionIndex + 1;
+        currQIRef.set(nextIndex);
         firebase.database().ref(`users`).once("value", snapshot => {
             snapshot.forEach(userSnap => {
                 let user = userSnap.val();
@@ -72,15 +78,6 @@ export default class AnswerCard extends React.Component {
         })
         firebase.database().ref(`gameState/currResponses`).remove();
         this.props.clearCards();
-        
-        let currQIRef = firebase.database().ref(`gameState/currQuestionIndex`);
-        let currQuestionIndex;
-        currQIRef.once("value", snapshot => {
-            currQuestionIndex = snapshot.val();
-        })
-        let nextIndex = currQuestionIndex + 1;
-        currQIRef.set(nextIndex);
-            
     }
 
     render() {

@@ -30,33 +30,12 @@ export default class Answers extends React.Component {
             if(snapshot) {
                 snapshot.forEach(responseSnap => {
                     let card = responseSnap.val().card;
-                    // console.log("CARD ANSWER", card.answer);
                     cardsArr.push(<AnswerCard key={responseSnap.key} answer={card.answer} playerIndex={card.playerIndex} whiteCardsRef={this.props.whiteCardsRef} userUID={this.props.userID} clearCards={() => this.clearResponses()}/>)
-
-                    //cardsArr.push(<AnswerCard key={responseSnap.key} cardSnap={card} whiteCardsRef={this.props.whiteCardsRef} userUID={this.props.userID} clearCards={() => this.clearResponses()}/>)
                 })
                 this.setState({cards: cardsArr});
             } else {
                 this.setState({cards: cardsArr});
             }
-
-            // let responses = [];
-            // let cardsArr = [];
-            // snapshot.forEach(responseSnap => {
-            //     let response = responseSnap.val();
-            //     responses.push(response.index);
-            //     console.log("Should be current responses: " + responses);
-            //     if(responses) {
-            //         this.props.whiteCardsRef.once("value", snapshot => {
-            //             snapshot.forEach(cardSnap => {
-            //                 let card = cardSnap.val();
-            //                 if(responses.includes(card.index)) {
-            //                     cardsArr.push(<AnswerCard key={cardSnap.key} cardSnap={cardSnap} whiteCardsRef={this.props.whiteCardsRef} userUID={this.props.userID} clearCards={() => this.clearResponses()}/>)
-            //                 }
-            //             })
-            //         });
-            //     }
-            //  })
         })
     }
 

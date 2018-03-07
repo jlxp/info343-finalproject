@@ -27,7 +27,6 @@ export default class CardHand extends React.Component {
     }
 
     render() {
-        //updateQuestion();
         return (
             <div>
                 <div className="black-card">

@@ -47,7 +47,6 @@ export default class CardHand extends React.Component {
                         });
                         this.setState({cards: cardsArr});
                         console.log(cardsArr);
-                        // console.log("ComponentWillMount state length: " + this.state.cards.length);
                     });
                 }
             })
@@ -58,18 +57,12 @@ export default class CardHand extends React.Component {
         let index;
         for(let i = 0; i < this.state.cards.length; i++) {
             let currCardIndex = this.state.cards[i].cardSnap.val().index;
-            // console.log("current card index", currCardIndex);
-            // console.log("cardIndex", cardIndex);
             if (currCardIndex === cardIndex) {
-                // console.log("match!");
-                // console.log("index to change:", i);
                 index = i;
             } 
         }
-        console.log("curr state length", this.state.cards.length);
         let cardsArr = this.state.cards.splice(0); //Duplicate state
         cardsArr[index] = cardObj;
-        console.log("replace card array:", cardsArr);
         this.setState({cards: cardsArr})
     }
 

@@ -45,7 +45,6 @@ export default class Card extends React.Component {
                                     cardSnapshot.forEach(whiteCardSnap => {
                                         let whiteCard = whiteCardSnap.val();
                                         if(whiteCard.index === currNextIndex) {
-                                            console.log("IN!");
                                             let nextIndexCardSnap = whiteCardSnap;
                                             let key = whiteCardSnap.key;
                                             let currPlayerIndex = whiteCardSnap.val().playerIndex;
@@ -64,16 +63,10 @@ export default class Card extends React.Component {
                                         } 
                                     })
                                 })
-
-                                // let cardStr = "card" + i;
-                                // console.log("card string: " + cardStr);
-                                // firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
                             }
                         })
                     })
                 }) 
-                // let nextIndex = currNextIndex + 1;
-                // firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
             });
         }
     }
@@ -81,7 +74,6 @@ export default class Card extends React.Component {
 
     render() {
         let answer = this.props.cardSnap.val();
-        // console.log("ANSWER", answer);
         return (
             <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index)}>
                 {answer.answer}
