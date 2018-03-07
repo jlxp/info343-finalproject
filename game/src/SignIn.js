@@ -66,7 +66,7 @@ export default class SignInView extends React.Component {
         }
         let waiting = null;
         if(this.state.userSnap) {
-            if (this.state.userSnap.numChildren() === 3) {
+            if (this.state.userSnap.numChildren() < 3) {
                 waiting = <div> waiting for more players to join...</div>;
             }
         }

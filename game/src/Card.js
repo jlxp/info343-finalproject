@@ -25,6 +25,7 @@ export default class Card extends React.Component {
     }
 
     handleClick(evt, num) {
+        console.log(num);
         evt.preventDefault();
         if(!this.state.questionAsker) {
             if(this.state.answers < 1) {
@@ -56,7 +57,7 @@ export default class Card extends React.Component {
                                                 cardSnap: nextIndexCardSnap,
                                                 userIndex: this.props.userIndex
                                             }
-                                            this.props.replaceCardAtIndex(whiteCardSnap.val().index, cardObj);
+                                            this.props.replaceCardAtIndex(num, cardObj);
                                             let cardStr = "card" + i;
                                             firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
                                             let nextIndex = currNextIndex + 1;
@@ -81,7 +82,7 @@ export default class Card extends React.Component {
 
     render() {
         let answer = this.props.cardSnap.val();
-        console.log("ANSWER", answer);
+        // console.log("ANSWER", answer);
         return (
             <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index)}>
                 {answer.answer}
