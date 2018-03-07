@@ -13,7 +13,7 @@ export default class CardHand extends React.Component {
     }
 
     componentWillMount() {
-        this.props.stateRef.once("value", snapshot => {
+        this.props.stateRef.on("value", snapshot => {
             let state = snapshot.val();
             this.setState({currQuestionIndex: state.currQuestionIndex});
             firebase.database().ref(`cards/black_cards`).on("value", snapshot => {snapshot.forEach(cardSnap => {
@@ -27,6 +27,7 @@ export default class CardHand extends React.Component {
     }
 
     render() {
+        //updateQuestion();
         return (
             <div>
                 <div className="black-card">

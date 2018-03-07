@@ -143,7 +143,7 @@ export default class Game extends React.Component {
                         <p className="lead">Cards Against Humanity game for Informatics students</p>
                     </div>
                 </div>
-                <div>{this.state.displayName}</div>
+                <h5 className="pl-5">Welcome, {this.state.displayName}!</h5>
                 <div id="card-container" className="container row">
                     <div id="question-card" className="col">
                         <Question stateRef={this.state.stateRef}/>

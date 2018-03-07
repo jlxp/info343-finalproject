@@ -79,7 +79,7 @@ export default class SignInView extends React.Component {
                         <h6> you must have 4 players to start the game </h6>
                     </div>
                 </header>
-                <form onSubmit={evt => this.handleSubmit(evt)}>
+                <form onSubmit={evt => this.handleSubmit(evt)} className="pl-5">
                     <div className="form-group">
                         <label htmlFor="user-name">User Name</label>
                         <input type="text"
@@ -88,9 +88,9 @@ export default class SignInView extends React.Component {
                             placeholder="your user name"
                             onChange={event => this.setState({userName: event.target.value})}/>
                     </div>
-                    <button className="btn btn-primary mb-2">Submit</button>
+                    <button className="btn btn-info mb-2">Submit</button>
                 </form>
-                <div>
+                <div className="pl-5">
                     <h2>Current Players</h2>
                     {playersNames}
                     {waiting}

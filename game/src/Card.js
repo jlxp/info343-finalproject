@@ -12,7 +12,7 @@ export default class Card extends React.Component {
     }
 
     componentWillMount() {
-        firebase.database().ref(`users`).once("value", snapshot => {
+        firebase.database().ref(`users`).on("value", snapshot => {
             snapshot.forEach(userSnap => {
                 let user = userSnap.val();
                 if (user.index === this.props.userIndex) {
@@ -25,15 +25,14 @@ export default class Card extends React.Component {
     }
 
     handleClick(evt, num) {
-        console.log(num);
         evt.preventDefault();
         if(!this.state.questionAsker) {
-            if(this.state.answers < 1) {
-                this.state.answers++;
+            //if(this.state.answers < 1) {
+                //this.state.answers++;
                 let ref = firebase.database().ref(`gameState/currResponses`);
                 ref.push({card: this.state.card}) // pass card data
                     .catch(err => this.setState({fbError: err}));
-            }
+            //}
             firebase.database().ref(`gameState/currAnswerIndex`).once("value", snapshot => {
                 let currNextIndex = snapshot.val();
                 firebase.database().ref(`users`).once("value", snapshot => {
