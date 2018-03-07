@@ -46,8 +46,8 @@ export default class AnswerCard extends React.Component {
                 let user = userSnap.val();
                 if(user.index === playerIndex) {
                     let uid = user.uid;
-                    let currPoints = user.points;
-                    currPoints++;
+                    let currPoints = user.points + 1;
+                    //currPoints++;
                     firebase.database().ref(`users/${uid}/points`).set(currPoints);
                 }
             })

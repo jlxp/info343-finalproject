@@ -12,27 +12,21 @@ export default class CardHand extends React.Component {
     }
 
     componentWillMount() {
-        // console.log('card hand props', this.props);
         firebase.database().ref(`users`).once("value", snapshot => {
             snapshot.forEach(userSnap => {
                 let user = userSnap.val();
-                // console.log("user=",user);
                 if (user.uid === this.props.userID) {
-                    // console.log("user ID matched");
                     this.setState({ userIndex: user.index })
                     let currHand = [];
                     let obj = user.cards;
                     for(let prop in obj) {
-                        // console.log("prop=",prop);
                         currHand.push(obj[prop]);
                     }
                     this.props.whiteCardsRef.once("value", snapshot => {
                         let cardsArr = [];
                         snapshot.forEach(cardSnap => {
                             let card = cardSnap.val();
-                            // console.log("card = ", card)
                             let i = 1;
-                            // console.log("current hand:", currHand);
                             if(currHand.includes(card.index)) {
                                 cardSnap.ref.update({
                                     playerIndex: this.state.userIndex
