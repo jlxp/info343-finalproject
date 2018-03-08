@@ -29,7 +29,7 @@ export default class Card extends React.Component {
     handleClick(evt, num) {
         evt.preventDefault();
         if(!this.state.questionAsker) { // only allows users to play a card if they are not the current question askers
-            if(this.state.answers < 1) {
+            //if(this.state.answers < 1) {
                 //this.state.answers++;
                 this.props.currResponsesRef.push({card: this.state.card}) // pass card data
                     .catch(err => this.setState({fbError: err}));
@@ -63,17 +63,15 @@ export default class Card extends React.Component {
                                         firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
                                         let nextIndex = currNextIndex + 1;
                                         firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
-                                        } 
-                                    })
+                                    } 
                                 })
-                            }
-                        })
+                            })
+                        }
                     })
-                }) 
-            }
+                })
+            }) 
         }
-    }   
-
+    }
 
     render() {
         let answer = this.props.cardSnap.val();
