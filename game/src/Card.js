@@ -14,6 +14,19 @@ export default class Card extends React.Component {
     }
 
     componentWillMount() {
+        // this.props.usersSnap.forEach(userSnap => {
+        //     let user = userSnap.val();
+        //     if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
+        //         this.setState({questionAsker: user.questionAsker})
+        //         this.setState({uid: user.uid})
+        //     }
+        // })
+        this.setState({card: this.props.cardSnap.val()})
+    }
+
+    // this is called when a user plays a card, updates the users current hand with a new card
+    // and moves played card to the current responses
+    handleClick(evt, num) {
         this.props.usersSnap.forEach(userSnap => {
             let user = userSnap.val();
             if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
@@ -22,11 +35,7 @@ export default class Card extends React.Component {
             }
         })
         this.setState({card: this.props.cardSnap.val()})
-    }
 
-    // this is called when a user plays a card, updates the users current hand with a new card
-    // and moves played card to the current responses
-    handleClick(evt, num) {
         evt.preventDefault();
         if(!this.state.questionAsker) { // only allows users to play a card if they are not the current question askers
             if(this.state.answers < 1) {
