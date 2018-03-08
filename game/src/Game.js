@@ -21,7 +21,9 @@ export default class Game extends React.Component {
             gameStateRef: undefined,
             gameStateSnap: undefined,
             currResponsesRef: undefined,
-            currResponsesSnap: undefined
+            currResponsesSnap: undefined,
+            currQuestionIndexRef: undefined,
+            currQuestionIndexSnap: undefined
         }
     }
 
@@ -53,6 +55,10 @@ export default class Game extends React.Component {
                 this.currResponsesValueListener = gameState_currResponses_ref.on("value", snapshot => this.setState({currResponsesSnap: snapshot}))
                 this.setState({currResponsesRef: gameState_currResponses_ref});
 
+                let gameState_currQuestionIndex_ref = firebase.database().ref(`gameState/currQuestionIndex`);
+                this.currQuestionIndexValueListener = gameState_currQuestionIndex_ref.on("value", snapshot => this.setState({currQuestionIndexSnap: snapshot}))
+                this.setState({currQuestionIndexRef: gameState_currQuestionIndex_ref});
+
                 gameState_ref.update({currQuestionIndex: 1, currAnswerIndex:21})
                     .catch(err => this.setState({fbError: err}));
 
@@ -76,7 +82,7 @@ export default class Game extends React.Component {
     */
     componentWillUnmount() {
         this.authUnlisten(); // stops listening for user events
-        firebase.database().ref(`users`).remove();
+        //firebase.database().ref(`users`).remove();
         this.state.whiteCardsRef.off("value", this.whiteCardsValueListener);
         this.state.blackCardsRef.off("value", this.blackCardsValueListener);
         this.state.usersRef.off("value", this.userValueListener);
@@ -115,12 +121,31 @@ export default class Game extends React.Component {
             })
         }); 
 
+
         let zIndexes = [1, 2, 3, 4];
         let playersRef = firebase.database().ref(`users`);
         let z = 0;
-        playersRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
-            cardSnap.ref.update({
+        playersRef.once("value", snapshot => {snapshot.forEach(personSnap => {
+            personSnap.ref.update({
                 index: zIndexes[z]
+            })
+            if(z === 0) {
+                personSnap.ref.update({
+                    questionAsker: true
+                })
+            } else {
+                personSnap.ref.update({
+                    questionAsker: false
+                })
+            }
+            personSnap.ref.update({
+                cards: {
+                    card1: (z * 5) + 1,
+                    card2: (z * 5) + 2,
+                    card3: (z * 5) + 3,
+                    card4: (z * 5) + 4,
+                    card5: (z * 5) + 5
+                }
             })
             z++;
             })
@@ -145,31 +170,34 @@ export default class Game extends React.Component {
     }
 
     render() {
-
-        return (
-            <div>
-                <div className="jumbotron jumbotron-fluid bg-info m-0 p-0">
-                    <div className="container">
-                        <h1 className="display-4">Nerds Against Humanity</h1>
-                        <p className="lead">Cards Against Humanity game for Informatics students</p>
+        if(this.state.gameStateSnap) {
+            return (
+                <div>
+                    <div className="jumbotron jumbotron-fluid bg-info m-0 p-0">
+                        <div className="container">
+                            <h1 className="display-4">Nerds Against Humanity</h1>
+                            <p className="lead">Cards Against Humanity game for Informatics students</p>
+                        </div>
+                    </div>
+                    <div className="container row">
+                        <h5 className="pl-5 col">Welcome, {this.state.displayName}!</h5>
+                        <h5 className="col">Current Points: {this.state.pointTotal}</h5>
+                    </div>
+                    <div id="card-container" className="container row">
+                        <div id="question-card" className="col">
+                            <Question stateSnap={this.state.gameStateSnap} blackCardsSnap={this.state.blackCardsSnap} usersSnap={this.state.usersSnap}/>
+                        </div>
+                        <div id="answer-cards" className="col">
+                            <Answers currResponsesSnap={this.state.currResponsesSnap} currQuestionIndexSnap={this.state.currQuestionIndexSnap} gameStateSnap={this.state.gameStateSnap} usersSnap={this.state.usersSnap} userID={this.state.userID}/>
+                        </div>
+                    </div>
+                    <div id="player-hand" className="m-5 justify-content-center">
+                        <CardHand usersSnap={this.state.usersSnap} whiteCardsSnap={this.state.whiteCardsSnap} whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID}/>
                     </div>
                 </div>
-                <div className="container row">
-                    <h5 className="pl-5 col">Welcome, {this.state.displayName}!</h5>
-                    <h5 className="col">Current Points: {this.state.pointTotal}</h5>
-                </div>
-                <div id="card-container" className="container row">
-                    <div id="question-card" className="col">
-                        <Question stateSnap={this.state.gameStateSnap} blackCardsSnap={this.state.blackCardsSnap} usersSnap={this.state.usersSnap}/>
-                    </div>
-                    <div id="answer-cards" className="col">
-                        <Answers currResponsesSnap={this.state.currResponsesSnap} gameStateSnap={this.state.gameStateSnap} usersSnap={this.state.usersSnap} userID={this.state.userID}/>
-                    </div>
-                </div>
-                <div id="player-hand" className="m-5 justify-content-center">
-                    <CardHand usersSnap={this.state.usersSnap} whiteCardsSnap={this.state.whiteCardsSnap} userID={this.state.userID}/>
-                </div>
-            </div>
-        );
+            );
+        } else {
+            return null;
+        }
     }
 }

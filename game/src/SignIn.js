@@ -17,22 +17,20 @@ export default class SignInView extends React.Component {
     }
 
     componentDidMount() {
-        this.unlistenAuth = firebase.auth().onAuthStateChanged(
-            user => {
-                //do stuff
-                if (user) {
-                    this.setState({currentUser:user.uid});
-                    let ref = firebase.database().ref(`users`);
-                    this.valueListener = ref.on("value", snapshot => this.setState({userSnap: snapshot}));
-                    this.setState({userRef: ref});
-                }
-    
+        this.unlistenAuth = firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                this.setState({currentUser: user.uid});
+                let ref = firebase.database().ref(`users`);
+                this.valueListener = ref.on("value", snapshot => this.setState({userSnap: snapshot}));
+                this.setState({userRef: ref});
             }
-        )
+
+        })
     }
 
     componentWillUnmount() {
         this.unlistenAuth();
+        this.state.userRef.off("value", this.valueListener);
     }
 
     handleSubmit(evt) {

@@ -10,11 +10,11 @@ export default class CardHand extends React.Component {
     }
 
     componentWillMount() {
-        if(this.props.usersSnap) {
+        if(this.props.usersSnap && this.props.whiteCardsSnap) {
             this.props.usersSnap.forEach(userSnap => {
                 let user = userSnap.val();
                 if (user.uid === this.props.userID) {
-                    this.setState({ userIndex: user.index })
+                    let userIndex = user.index;
                     let currHand = [];
                     let obj = user.cards;
                     for(let prop in obj) {
@@ -25,13 +25,13 @@ export default class CardHand extends React.Component {
                         let card = cardSnap.val();
                         if(currHand.includes(card.index)) {
                             cardSnap.ref.update({
-                                playerIndex: this.state.userIndex
+                                playerIndex: userIndex
                             });
                             cardsArr.push({
                                 userID: this.props.userID,
                                 whiteCardsRef: this.props.whiteCardsRef,
                                 cardSnap: cardSnap,
-                                userIndex: this.state.userIndex
+                                userIndex: userIndex
                             });
                         }
                     });
@@ -55,10 +55,9 @@ export default class CardHand extends React.Component {
     }
 
     render() {
-        if (!this.props.whiteCardsRef) {
+        if (!this.props.whiteCardsSnap) {
             return <p>loading cards...</p>
         }
-
         let cards = this.state.cards.map(cardObj => {
             return <Card key={cardObj.cardSnap.key} userID={cardObj.userID} usersSnap={this.props.usersSnap} whiteCardsRef={cardObj.whiteCardsRef} cardSnap={cardObj.cardSnap} userIndex={cardObj.userIndex} replaceCardAtIndex={this.replaceCardAtIndex}/>
         });

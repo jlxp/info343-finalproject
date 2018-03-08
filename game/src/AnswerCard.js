@@ -9,7 +9,9 @@ export default class AnswerCard extends React.Component {
     }
 
     componentWillMount() {
+        console.log("called mount of answer card");
         if(this.props.usersSnap) {
+            console.log("MOUNTING OF ANSWER CARD");
             this.props.usersSnap.forEach(userSnap => {
                 let user = userSnap.val();
                 if(user.uid === this.props.userUID) {
@@ -36,7 +38,6 @@ export default class AnswerCard extends React.Component {
                 if(user.uid === this.props.userUID) {
                     this.setState({isUserQuestionAsker: user.questionAsker})
                 }
-
                 if(user.questionAsker) {
                     let questionAskerIndex = user.index;
                     this.setState({currQAUID: user.uid});
@@ -50,13 +51,9 @@ export default class AnswerCard extends React.Component {
                 }
             })
         let playerIndex = this.props.playerIndex;
-        let currQIRef = firebase.database().ref(`gameState/currQuestionIndex`);
-        let currQuestionIndex;
-        currQIRef.once("value", snapshot => {
-            currQuestionIndex = snapshot.val();
-        })
+        let currQuestionIndex = this.props.currQuestionIndexSnap.val();
         let nextIndex = currQuestionIndex + 1;
-        currQIRef.set(nextIndex);
+        this.props.currQuestionIndexSnap.ref.set(nextIndex);
         this.props.usersSnap.forEach(userSnap => {
             let user = userSnap.val();
             if(user.index === playerIndex) {
@@ -65,19 +62,12 @@ export default class AnswerCard extends React.Component {
                 firebase.database().ref(`users/${uid}/points`).set(currPoints);
             }
         })
-        // if(this.state.questionAsker) {
-        // }
         this.props.usersSnap.forEach(userSnap => {
             let user = userSnap.val();
             if(user.uid === this.props.userUID) {
                 let uid = user.uid;
                 firebase.database().ref(`users/${uid}/questionAsker`).set(false);
-            }
-        })
-        this.props.usersSnap.forEach(userSnap => {
-            let user = userSnap.val();
-            if(user.index === this.state.nextQuestionAskerIndex && (user.uid === this.state.currQAUID)) {
-            //if(user.index === this.state.nextQuestionAskerIndex && !(user.questionAsker)) {
+            } else if (user.index === this.state.nextQuestionAskerIndex) {
                 let uid = user.uid;
                 firebase.database().ref(`users/${uid}/questionAsker`).set(true);
             }
@@ -88,6 +78,7 @@ export default class AnswerCard extends React.Component {
 
     render() {
         let answer = this.props.answer;
+        console.log("ANSWE", answer);
         return (
             <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index)}>
                 {answer}

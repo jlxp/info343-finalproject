@@ -13,11 +13,11 @@ export default class CardHand extends React.Component {
 
     componentWillMount() {
         if(this.props.stateSnap && this.props.blackCardsSnap) {
-            let state = this.props.StateSnap.val();
+            let state = this.props.stateSnap.val();
             this.setState({currQuestionIndex: state.currQuestionIndex});
             this.props.blackCardsSnap.forEach(cardSnap => {
                 let card = cardSnap.val();
-                if(card.index === this.state.currQuestionIndex) {
+                if(card.index === state.currQuestionIndex) {
                     this.setState({questionText: card.question})
                 }
             })
