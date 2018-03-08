@@ -12,25 +12,26 @@ export default class CardHand extends React.Component {
     }
 
     componentWillMount() {
-        if(this.props.stateSnap && this.props.blackCardsSnap) {
-            let state = this.props.stateSnap.val();
-            this.setState({currQuestionIndex: state.currQuestionIndex});
-            this.props.blackCardsSnap.forEach(cardSnap => {
-                let card = cardSnap.val();
-                if(card.index === state.currQuestionIndex) {
-                    this.setState({questionText: card.question})
-                }
-            })
-        }
-        // Calls GameEnd to check if game is over
         this.setState({end: <GameEnd usersSnap={this.props.usersSnap}/>});
     }
 
     render() {
+        let questionText = "";
+        if(this.props.stateSnap && this.props.blackCardsSnap) {
+            let state = this.props.stateSnap.val();
+            let currentQuestionIndex = state.currQuestionIndex;
+            this.props.blackCardsSnap.forEach(cardSnap => {
+                let card = cardSnap.val();
+                if(card.index === state.currQuestionIndex) {
+                    questionText = card.question;
+                }
+            })
+        }
+
         return (
             <div>
                 <div className="black-card">
-                    {this.state.questionText}
+                    {questionText}
                 </div>
                 {this.state.end}
             </div>

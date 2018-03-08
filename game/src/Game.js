@@ -1,3 +1,8 @@
+/**
+ * Game is the main view for our Nerds Against Humanity game. It houses all card logic and views and 
+ * lets users actually play the game.
+ */
+
 import React from "react";
 import {ROUTES} from "./Constants";
 import firebase from "firebase/app";
@@ -11,6 +16,7 @@ import './index.css';
 export default class Game extends React.Component {
     constructor(props) {
         super(props);
+        // initialize what will be stored in state
         this.state = {
             whiteCardsRef: undefined,
             whiteCardsSnap: undefined,
@@ -27,41 +33,38 @@ export default class Game extends React.Component {
         }
     }
 
-    /** 
-     * Called when page is mounted
-    */
     componentDidMount() {
         this.authUnlisten = firebase.auth().onAuthStateChanged(user => {
             if(user) { // if a user is signed in
                 this.setState({userID: user.uid});
-
+                // Sets a reference and snapshot for white cards (answers) stored in Firebase, listens for changes
                 let white_ref = firebase.database().ref(`cards/white_cards`);
                 this.whiteCardsValueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot}));
                 this.setState({whiteCardsRef: white_ref});
-
+                // Sets a refernce and snapshot for black cards (questions) stored in Firebase, listens for changes
                 let black_ref = firebase.database().ref(`cards/black_cards`);
                 this.blackCardsValueListener = black_ref.on("value", snapshot => this.setState({blackCardsSnap: snapshot}));
                 this.setState({blackCardsRef: black_ref});
-
+                // Sets a reference and snapshot for current user information stored in Firebase, listens for changes
                 let users_ref = firebase.database().ref(`users`);
                 this.userValueListener = users_ref.on("value", snapshot => this.setState({usersSnap: snapshot}));
                 this.setState({usersRef: users_ref});
-
+                // Sets a reference and snapshot for game state informaiton stored in Firebase, listens for changes
                 let gameState_ref = firebase.database().ref(`gameState`);
                 this.gameStateValueListener = gameState_ref.on("value", snapshot => this.setState({gameStateSnap: snapshot}));
                 this.setState({gameStateRef: gameState_ref})
-
+                // Sets a reference for current response data stored in Firebase, listens for changes
                 let gameState_currResponses_ref = firebase.database().ref(`gameState/currResponses`);
                 this.currResponsesValueListener = gameState_currResponses_ref.on("value", snapshot => this.setState({currResponsesSnap: snapshot}))
                 this.setState({currResponsesRef: gameState_currResponses_ref});
-
+                // Sets a reference for current question index data stored in Firebase, listens for changes
                 let gameState_currQuestionIndex_ref = firebase.database().ref(`gameState/currQuestionIndex`);
                 this.currQuestionIndexValueListener = gameState_currQuestionIndex_ref.on("value", snapshot => this.setState({currQuestionIndexSnap: snapshot}))
                 this.setState({currQuestionIndexRef: gameState_currQuestionIndex_ref});
-
+                // Initializes current question index and current answer index in deck of cards in Firebase
                 gameState_ref.update({currQuestionIndex: 1, currAnswerIndex:21})
                     .catch(err => this.setState({fbError: err}));
-
+                // 
                 firebase.database().ref(`users/${this.state.userID}/displayName`).on("value", snapshot => {
                     this.setState({displayName: snapshot.val()})
                 })
