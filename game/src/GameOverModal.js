@@ -11,12 +11,17 @@ class GameOverModal extends React.Component {
         }
     }
 
+    componentDidMount() {
+        console.log("GAME OVER MODAL MOUNTED")
+    }
+
     handleClick(evt){
         evt.preventDefault();
         this.props.history.push(ROUTES.signIn);
     }
 
     render() {
+        console.log("IN RENDER OF GAME OVER MODAL")
         return (
             <div>
                 <Modal isOpen={this.state.modal}>

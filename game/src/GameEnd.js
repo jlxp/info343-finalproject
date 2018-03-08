@@ -10,23 +10,22 @@ export default class GameEnd extends React.Component {
         };
     }
 
-    componentWillMount() {
+    render() {
+        let showModal = false;
+        let displayName = undefined;
         if(this.props.usersSnap) {
             this.props.usersSnap.forEach(userSnap => {
                 let user = userSnap.val();
-                if (user.points > 4) {
-                    this.setState({showModal: true})
-                    this.setState({winner: user.displayName})
+                if(user.points > 4) {
+                    showModal = true;
+                    displayName = user.displayName;
                 }
             })
         }
-    }
-
-    render() {
-        if(this.state.showModal) {
-            return (<GameOverModal winner={this.state.winner} showModal={this.state.showModal}/>);
+        if(showModal) {
+            return (<GameOverModal winner={displayName} showModal={showModal}/>);
         } else {
-            return null
+            return null;
         }
     }
 }

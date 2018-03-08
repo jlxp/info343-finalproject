@@ -82,7 +82,7 @@ export default class Game extends React.Component {
     */
     componentWillUnmount() {
         this.authUnlisten(); // stops listening for user events
-        //firebase.database().ref(`users`).remove();
+        firebase.database().ref(`users`).remove();
         this.state.whiteCardsRef.off("value", this.whiteCardsValueListener);
         this.state.blackCardsRef.off("value", this.blackCardsValueListener);
         this.state.usersRef.off("value", this.userValueListener);
