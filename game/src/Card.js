@@ -73,7 +73,6 @@ export default class Card extends React.Component {
         }
     }
 
-
     render() {
         let answer = this.props.cardSnap.val();
         return (
