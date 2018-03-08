@@ -27,17 +27,19 @@ export default class Card extends React.Component {
     // this is called when a user plays a card, updates the users current hand with a new card
     // and moves played card to the current responses
     handleClick(evt, num) {
+        evt.preventDefault();
+        let isUserCurrQuestionAsker = false;
+        let currUserUID;
         this.props.usersSnap.forEach(userSnap => {
             let user = userSnap.val();
             if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
-                this.setState({questionAsker: user.questionAsker})
-                this.setState({uid: user.uid})
+                isUserCurrQuestionAsker = user.questionAsker;
+                currUserUID = user.uid;
             }
         })
         this.setState({card: this.props.cardSnap.val()})
 
-        evt.preventDefault();
-        if(!this.state.questionAsker) { // only allows users to play a card if they are not the current question askers
+        if(!isUserCurrQuestionAsker) { // only allows users to play a card if they are not the current question askers
             if(this.state.answers < 1) {
                 this.state.answers++;
                 this.props.currResponsesRef.push({card: this.state.card}) // pass card data
@@ -69,7 +71,7 @@ export default class Card extends React.Component {
                                         // replaces card in users current hand
                                         this.props.replaceCardAtIndex(num, cardObj);
                                         let cardStr = "card" + i;
-                                        firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
+                                        firebase.database().ref(`users/${currUserUID}/cards/${cardStr}`).set(currNextIndex);
                                         let nextIndex = currNextIndex + 1;
                                         firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
                                     } 

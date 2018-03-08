@@ -188,7 +188,7 @@ export default class Game extends React.Component {
                     <div className="container row">
                         <h5 className="pl-5 col">Welcome, {this.state.displayName}!</h5>
                         <h5 className="col">Current Points: {this.state.pointTotal}</h5>
-                        <h5 className="col">Question Asker: {this.state.questionAsker}</h5>
+                        <h5 className="col">Current Question Asker: {this.state.questionAsker}</h5>
                     </div>
                     <div id="card-container" className="container row">
                         <div id="question-card" className="col">
