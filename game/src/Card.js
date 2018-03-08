@@ -14,14 +14,8 @@ export default class Card extends React.Component {
     }
 
     componentWillMount() {
-        // this.props.usersSnap.forEach(userSnap => {
-        //     let user = userSnap.val();
-        //     if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
-        //         this.setState({questionAsker: user.questionAsker})
-        //         this.setState({uid: user.uid})
-        //     }
-        // })
-        this.setState({card: this.props.cardSnap.val()})
+        this.setState({answers: 0});
+        this.setState({card: this.props.cardSnap.val()});
     }
 
     // this is called when a user plays a card, updates the users current hand with a new card
@@ -38,12 +32,12 @@ export default class Card extends React.Component {
         this.setState({card: this.props.cardSnap.val()})
         this.props.usersSnap.forEach(userSnap => {
             let user = userSnap.val();
-            if(!user.questionAsker) { // only allows users to play a card if they are not the current question askers
-                if(this.state.answers < 1) {
-                    this.state.answers++;
-                    this.props.currResponsesRef.push({card: this.state.card}) // pass card data
-                        .catch(err => this.setState({fbError: err}));
-                }
+            if(!user.questionAsker && (this.state.answers < 1)) { // only allows users to play a card if they are not the current question askers
+                console.log("THIS SHOULD BE FALSE!!!!:", user.questionAsker);
+                let currAnswers = this.state.answers + 1;
+                this.setState({answers: currAnswers});
+                this.props.currResponsesRef.push({card: this.state.card}) // pass card data
+                    .catch(err => this.setState({fbError: err}));
                 firebase.database().ref(`gameState/currAnswerIndex`).once("value", snapshot => {
                     let currNextIndex = snapshot.val(); // gets index of next answer index
                     this.props.usersSnap.forEach(userSnap => {
