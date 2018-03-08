@@ -1,5 +1,4 @@
 import React from "react";
-import firebase from "firebase/app";
 import GameEnd from "./GameEnd";
 
 
@@ -13,17 +12,18 @@ export default class CardHand extends React.Component {
     }
 
     componentWillMount() {
-        this.props.stateRef.on("value", snapshot => {
-            let state = snapshot.val();
+        if(this.props.stateSnap && this.props.blackCardsSnap) {
+            let state = this.props.StateSnap.val();
             this.setState({currQuestionIndex: state.currQuestionIndex});
-            firebase.database().ref(`cards/black_cards`).on("value", snapshot => {snapshot.forEach(cardSnap => {
+            this.props.blackCardsSnap.forEach(cardSnap => {
                 let card = cardSnap.val();
                 if(card.index === this.state.currQuestionIndex) {
                     this.setState({questionText: card.question})
                 }
-            })})
-        })
-        this.setState({end: <GameEnd />});
+            })
+        }
+        // Calls GameEnd to check if game is over
+        this.setState({end: <GameEnd usersSnap={this.props.usersSnap}/>});
     }
 
     render() {

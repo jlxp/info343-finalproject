@@ -4,7 +4,6 @@ import firebase from "firebase/app";
 import CardHand from './CardHand';
 import Question from './Question';
 import Answers from './Answers';
-import GameEnd from './GameEnd';
 import "firebase/auth";
 import 'firebase/database';
 import './index.css';
@@ -13,7 +12,16 @@ export default class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            x: undefined
+            whiteCardsRef: undefined,
+            whiteCardsSnap: undefined,
+            blackCardsRef: undefined,
+            blackCardsSnap: undefined,
+            usersRef: undefined,
+            usersSnap: undefined,
+            gameStateRef: undefined,
+            gameStateSnap: undefined,
+            currResponsesRef: undefined,
+            currResponsesSnap: undefined
         }
     }
 
@@ -23,35 +31,44 @@ export default class Game extends React.Component {
     componentDidMount() {
         this.authUnlisten = firebase.auth().onAuthStateChanged(user => {
             if(user) { // if a user is signed in
-                let white_ref = firebase.database().ref(`cards/white_cards`);
                 this.setState({userID: user.uid});
-                console.log(this.state.userID);
+
+                let white_ref = firebase.database().ref(`cards/white_cards`);
+                this.whiteCardsValueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot}));
+                this.setState({whiteCardsRef: white_ref});
+
+                let black_ref = firebase.database().ref(`cards/black_cards`);
+                this.blackCardsValueListener = black_ref.on("value", snapshot => this.setState({blackCardsSnap: snapshot}));
+                this.setState({blackCardsRef: black_ref});
+
+                let users_ref = firebase.database().ref(`users`);
+                this.userValueListener = users_ref.on("value", snapshot => this.setState({usersSnap: snapshot}));
+                this.setState({usersRef: users_ref});
+
+                let gameState_ref = firebase.database().ref(`gameState`);
+                this.gameStateValueListener = gameState_ref.on("value", snapshot => this.setState({gameStateSnap: snapshot}));
+                this.setState({gameStateRef: gameState_ref})
+
+                let gameState_currResponses_ref = firebase.database().ref(`gameState/currResponses`);
+                this.currResponsesValueListener = gameState_currResponses_ref.on("value", snapshot => this.setState({currResponsesSnap: snapshot}))
+                this.setState({currResponsesRef: gameState_currResponses_ref});
+
+                gameState_ref.update({currQuestionIndex: 1, currAnswerIndex:21})
+                    .catch(err => this.setState({fbError: err}));
+
                 firebase.database().ref(`users/${this.state.userID}/displayName`).on("value", snapshot => {
-                    console.log("snapshot:", snapshot.val())
                     this.setState({displayName: snapshot.val()})
                 })
                 firebase.database().ref(`users/${this.state.userID}/points`).on("value", snapshot => {
-                    console.log("snapshot:", snapshot.val())
                     this.setState({pointTotal: snapshot.val()})
                 })
-                // firebase.database().ref(`users/${this.state.userID}/questionAsker`).on("value", snapshot => {
-                //     console.log("snapshot:", snapshot.val())
-                //     this.setState({ifQuestionAsker: snapshot.val()})
-                // })
-        
-                this.setState({whiteCardsRef: white_ref});
+
+                this.shuffleCards();
+                
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);
             }
         });
-    }
-
-    componentWillMount() {
-        let ref = firebase.database().ref(`gameState`);
-        this.setState({stateRef: ref});
-        ref.update({currQuestionIndex: 1, currAnswerIndex:21})
-            .catch(err => this.setState({fbError: err}));
-        this.shuffleCards();
     }
 
     /** 
@@ -59,12 +76,17 @@ export default class Game extends React.Component {
     */
     componentWillUnmount() {
         this.authUnlisten(); // stops listening for user events
-        firebase.database().ref(`users`).remove(); //UNCOMMENT THIS LATER!!!!!!!
+        firebase.database().ref(`users`).remove();
+        this.state.whiteCardsRef.off("value", this.whiteCardsValueListener);
+        this.state.blackCardsRef.off("value", this.blackCardsValueListener);
+        this.state.usersRef.off("value", this.userValueListener);
+        this.state.gameStateRef.off("value", this.gameStateValueListener);
+        this.state.currResponsesRef.off("value", this.currResponsesValueListener);
     }
 
     shuffleCards() {
         let indexes = [];
-        for(let i = 1; i < 213; i++) {
+        for(let i = 1; i < 214; i++) {
             indexes.push(i);
         }
         indexes = this.shuffle(indexes);
@@ -96,33 +118,14 @@ export default class Game extends React.Component {
         let zIndexes = [1, 2, 3, 4];
         let playersRef = firebase.database().ref(`users`);
         let z = 0;
-        playersRef.once("value", snapshot => {snapshot.forEach(personSnap => {
-            personSnap.ref.update({
+        playersRef.once("value", snapshot => {snapshot.forEach(cardSnap => {
+            cardSnap.ref.update({
                 index: zIndexes[z]
-            })
-            if(z === 0) {
-                personSnap.ref.update({
-                    questionAsker: true
-                })
-            } else {
-                personSnap.ref.update({
-                    questionAsker: false
-                })
-            }
-            personSnap.ref.update({
-                cards: {
-                    card1: (z * 5) + 1,
-                    card2: (z * 5) + 2,
-                    card3: (z * 5) + 3,
-                    card4: (z * 5) + 4,
-                    card5: (z * 5) + 5
-                }
             })
             z++;
             })
         }); 
     }
-
 
     /**
      * Shuffles an array in-place.
@@ -142,6 +145,7 @@ export default class Game extends React.Component {
     }
 
     render() {
+
         return (
             <div>
                 <div className="jumbotron jumbotron-fluid bg-info m-0 p-0">
@@ -156,14 +160,14 @@ export default class Game extends React.Component {
                 </div>
                 <div id="card-container" className="container row">
                     <div id="question-card" className="col">
-                        <Question stateRef={this.state.stateRef}/>
+                        <Question stateSnap={this.state.gameStateSnap} blackCardsSnap={this.state.blackCardsSnap} usersSnap={this.state.usersSnap}/>
                     </div>
                     <div id="answer-cards" className="col">
-                        <Answers whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID}/>
+                        <Answers currResponsesSnap={this.state.currResponsesSnap} gameStateSnap={this.state.gameStateSnap} usersSnap={this.state.usersSnap} userID={this.state.userID}/>
                     </div>
                 </div>
                 <div id="player-hand" className="m-5 justify-content-center">
-                    <CardHand whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID}/>
+                    <CardHand usersSnap={this.state.usersSnap} whiteCardsSnap={this.state.whiteCardsSnap} userID={this.state.userID}/>
                 </div>
             </div>
         );

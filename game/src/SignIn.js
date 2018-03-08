@@ -24,7 +24,7 @@ export default class SignInView extends React.Component {
                     this.setState({currentUser:user.uid});
                     let ref = firebase.database().ref(`users`);
                     this.valueListener = ref.on("value", snapshot => this.setState({userSnap: snapshot}));
-                    this.state.userRef = ref;
+                    this.setState({userRef: ref});
                 }
     
             }
@@ -45,10 +45,10 @@ export default class SignInView extends React.Component {
                 cards: {}
             }}
             this.state.userRef.update(player);
-            this.state.players++;
+            let currPlayers = this.state.players;
+            currPlayers = currPlayers + 1;
+            this.setState({player: currPlayers});
         }
-
-
     }
 
     render() {
@@ -66,7 +66,7 @@ export default class SignInView extends React.Component {
         }
         let waiting = null;
         if(this.state.userSnap) {
-            if (this.state.userSnap.numChildren() < 3) {
+            if (this.state.userSnap.numChildren() < 4) {
                 waiting = <div> waiting for more players to join...</div>;
             }
         }

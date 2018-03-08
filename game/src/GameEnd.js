@@ -1,5 +1,4 @@
 import React from "react";
-import firebase from "firebase/app";
 import GameOverModal from './GameOverModal';
 
 
@@ -12,15 +11,15 @@ export default class GameEnd extends React.Component {
     }
 
     componentWillMount() {
-        firebase.database().ref(`users`).on("value", snapshot => {
-            snapshot.forEach(userSnap => {
+        if(this.props.usersSnap) {
+            this.props.usersSnap.forEach(userSnap => {
                 let user = userSnap.val();
                 if (user.points > 4) {
                     this.setState({showModal: true})
                     this.setState({winner: user.displayName})
                 }
             })
-        })
+        }
     }
 
     render() {

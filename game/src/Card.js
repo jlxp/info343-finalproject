@@ -1,7 +1,5 @@
 import React from "react";
 import firebase from "firebase/app";
-import CardHand from "./CardHand";
-
 
 export default class Card extends React.Component {
     constructor(props) {
@@ -12,14 +10,12 @@ export default class Card extends React.Component {
     }
 
     componentWillMount() {
-        firebase.database().ref(`users`).on("value", snapshot => {
-            snapshot.forEach(userSnap => {
-                let user = userSnap.val();
-                if (user.index === this.props.userIndex) {
-                    this.setState({questionAsker: user.questionAsker})
-                    this.setState({uid: user.uid})
-                }
-            })
+        this.props.usersSnap.forEach(userSnap => {
+            let user = userSnap.val();
+            if (user.index === this.props.userIndex) {
+                this.setState({questionAsker: user.questionAsker})
+                this.setState({uid: user.uid})
+            }
         })
         this.setState({card: this.props.cardSnap.val()})
     }
@@ -35,39 +31,36 @@ export default class Card extends React.Component {
             //}
             firebase.database().ref(`gameState/currAnswerIndex`).once("value", snapshot => {
                 let currNextIndex = snapshot.val();
-                firebase.database().ref(`users`).once("value", snapshot => {
-                    snapshot.forEach(userSnap => {
-                        let i = 0;
-                        userSnap.child("cards").forEach(cardSnap => {
-                            i++;
-                            if(cardSnap.val() === num) {
-                                this.props.whiteCardsRef.once("value", cardSnapshot => {
-                                    cardSnapshot.forEach(whiteCardSnap => {
-                                        let whiteCard = whiteCardSnap.val();
-                                        if(whiteCard.index === currNextIndex) {
-                                            let nextIndexCardSnap = whiteCardSnap;
-                                            let key = whiteCardSnap.key;
-                                            let currPlayerIndex = whiteCardSnap.val().playerIndex;
-                                            firebase.database().ref(`cards/white_cards/${key}/playerIndex`).set(this.props.userIndex);
-                                            let cardObj = {
-                                                userID: this.props.userID,
-                                                whiteCardsRef: this.props.whiteCardsRef,
-                                                cardSnap: nextIndexCardSnap,
-                                                userIndex: this.props.userIndex
-                                            }
-                                            this.props.replaceCardAtIndex(num, cardObj);
-                                            let cardStr = "card" + i;
-                                            firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
-                                            let nextIndex = currNextIndex + 1;
-                                            firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
-                                        } 
-                                    })
+                this.props.usersSnap.forEach(userSnap => {
+                    let i = 0;
+                    userSnap.child("cards").forEach(cardSnap => {
+                        i++;
+                        if(cardSnap.val() === num) {
+                            this.props.whiteCardsRef.once("value", cardSnapshot => {
+                                cardSnapshot.forEach(whiteCardSnap => {
+                                    let whiteCard = whiteCardSnap.val();
+                                    if(whiteCard.index === currNextIndex) {
+                                        let nextIndexCardSnap = whiteCardSnap;
+                                        let key = whiteCardSnap.key;
+                                        firebase.database().ref(`cards/white_cards/${key}/playerIndex`).set(this.props.userIndex);
+                                        let cardObj = {
+                                            userID: this.props.userID,
+                                            whiteCardsRef: this.props.whiteCardsRef,
+                                            cardSnap: nextIndexCardSnap,
+                                            userIndex: this.props.userIndex
+                                        }
+                                        this.props.replaceCardAtIndex(num, cardObj);
+                                        let cardStr = "card" + i;
+                                        firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
+                                        let nextIndex = currNextIndex + 1;
+                                        firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
+                                    } 
                                 })
-                            }
-                        })
+                            })
+                        }
                     })
-                }) 
-            });
+                })
+            }) 
         }
     }
 

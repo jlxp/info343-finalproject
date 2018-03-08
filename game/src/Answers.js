@@ -1,6 +1,4 @@
 import React from "react";
-import Card from './Card';
-import firebase from "firebase/app";
 import AnswerCard from './AnswerCard.js';
 
 export default class Answers extends React.Component {
@@ -9,10 +7,17 @@ export default class Answers extends React.Component {
         this.state = {}
     }
 
-    componentDidMount() {
-        let state_ref = firebase.database().ref(`gameState`);
-        this.setState({stateRef: state_ref});
-        this.valueListener = state_ref.on("value", snapshot => this.setState({stateSnap: snapshot}));
+    componentWillMount() {
+        let cardsArr =[];
+        if(this.props.currResponsesSnap) {
+            this.props.currResponsesSnap.forEach(responseSnap => {
+                let card = responseSnap.val().card;
+                cardsArr.push(<AnswerCard key={responseSnap.key} answer={card.answer} playerIndex={card.playerIndex} userUID={this.props.userID} clearCards={() => this.clearResponses()} usersSnap={this.props.usersSnap}/>)
+            })
+            this.setState({cards: cardsArr});
+        } else {
+            this.setState({cards: cardsArr})
+        }
     }
 
     /** 
@@ -20,23 +25,6 @@ export default class Answers extends React.Component {
     */
     componentWillUnmount() {
         this.clearResponses();
-        this.state.stateRef.off("value", this.valueListener); 
-    }
-
-    componentWillMount() {
-        let stateRef = firebase.database().ref(`gameState/currResponses`);
-        stateRef.on("value", snapshot => {
-            let cardsArr = [];
-            if(snapshot) {
-                snapshot.forEach(responseSnap => {
-                    let card = responseSnap.val().card;
-                    cardsArr.push(<AnswerCard key={responseSnap.key} answer={card.answer} playerIndex={card.playerIndex} whiteCardsRef={this.props.whiteCardsRef} userUID={this.props.userID} clearCards={() => this.clearResponses()}/>)
-                })
-                this.setState({cards: cardsArr});
-            } else {
-                this.setState({cards: cardsArr});
-            }
-        })
     }
 
     clearResponses() {
