@@ -1,3 +1,8 @@
+/**
+ * Modal displayed when game is over, shows the display name of the user who won the game
+ * and allows users to play again by routing them back to sign in page
+ */
+
 import React from 'react';
 import {Button, Modal, ModalBody, ModalFooter} from 'reactstrap';
 import {ROUTES} from "./Constants";
@@ -11,17 +16,13 @@ class GameOverModal extends React.Component {
         }
     }
 
-    componentDidMount() {
-        console.log("GAME OVER MODAL MOUNTED")
-    }
-
+    // navigates a user back to sign in page
     handleClick(evt){
         evt.preventDefault();
         this.props.history.push(ROUTES.signIn);
     }
 
     render() {
-        console.log("IN RENDER OF GAME OVER MODAL")
         return (
             <div>
                 <Modal isOpen={this.state.modal}>

@@ -64,28 +64,26 @@ export default class Game extends React.Component {
                 // Initializes current question index and current answer index in deck of cards in Firebase
                 gameState_ref.update({currQuestionIndex: 1, currAnswerIndex:21})
                     .catch(err => this.setState({fbError: err}));
-                // 
+                // Gets the current user's display name
                 firebase.database().ref(`users/${this.state.userID}/displayName`).on("value", snapshot => {
                     this.setState({displayName: snapshot.val()})
                 })
+                // Gets the current user's point total
                 firebase.database().ref(`users/${this.state.userID}/points`).on("value", snapshot => {
                     this.setState({pointTotal: snapshot.val()})
                 })
-
+                // Calls for the cards to be shuffled prior to start of game
                 this.shuffleCards();
-                
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);
             }
         });
     }
 
-    /** 
-     * Called when page is unmounted
-    */
     componentWillUnmount() {
         this.authUnlisten(); // stops listening for user events
-        firebase.database().ref(`users`).remove();
+        firebase.database().ref(`users`).remove(); // removes all current users to start new game
+        // removes value listeners to stop listening for changes to Firebase data when game is over
         this.state.whiteCardsRef.off("value", this.whiteCardsValueListener);
         this.state.blackCardsRef.off("value", this.blackCardsValueListener);
         this.state.usersRef.off("value", this.userValueListener);
@@ -94,6 +92,7 @@ export default class Game extends React.Component {
     }
 
     shuffleCards() {
+        // shuffles an array with integer values for all white cards and assigns them to these answer cards
         let indexes = [];
         for(let i = 1; i < 214; i++) {
             indexes.push(i);
@@ -108,7 +107,7 @@ export default class Game extends React.Component {
             i++;
             })
         }); 
-
+        // shuffles an array with integer values for all black cards and assigns them to these question cards
         let qIndexes = [];
         for(let j = 1; j < 55; j++) {
             qIndexes.push(j);
@@ -123,8 +122,7 @@ export default class Game extends React.Component {
             j++;
             })
         }); 
-
-
+        // shuffles an array with integer values for all players and assigns them to the users
         let zIndexes = [1, 2, 3, 4];
         let playersRef = firebase.database().ref(`users`);
         let z = 0;
@@ -132,15 +130,16 @@ export default class Game extends React.Component {
             personSnap.ref.update({
                 index: zIndexes[z]
             })
-            if(z === 0) {
+            if(z === 0) { // sets question asker to be person with index of 1 for beginning of game
                 personSnap.ref.update({
                     questionAsker: true
                 })
-            } else {
+            } else { // sets question asker to be false for all other players at start of game
                 personSnap.ref.update({
                     questionAsker: false
                 })
             }
+            // assigns starting card values for all users
             personSnap.ref.update({
                 cards: {
                     card1: (z * 5) + 1,
@@ -173,7 +172,7 @@ export default class Game extends React.Component {
     }
 
     render() {
-        if(this.state.gameStateSnap) {
+        if(this.state.gameStateSnap) { // waits until firebase references have returned to call components
             return (
                 <div>
                     <div className="jumbotron jumbotron-fluid bg-info m-0 p-0">
@@ -195,7 +194,7 @@ export default class Game extends React.Component {
                         </div>
                     </div>
                     <div id="player-hand" className="m-5 justify-content-center">
-                        <CardHand usersSnap={this.state.usersSnap} whiteCardsSnap={this.state.whiteCardsSnap} whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID}/>
+                        <CardHand usersSnap={this.state.usersSnap} whiteCardsSnap={this.state.whiteCardsSnap} whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID} currResponsesRef={this.state.currResponsesRef}/>
                     </div>
                 </div>
             );
