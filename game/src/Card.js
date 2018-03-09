@@ -28,6 +28,7 @@ export default class Card extends React.Component {
     // and moves played card to the current responses
     handleClick(evt, num) {
         evt.preventDefault();
+        console.log("Question Asker:", this.state.questionAsker);
         if(!this.state.questionAsker) { // only allows users to play a card if they are not the current question askers
             //if(this.state.answers < 1) {
                 //this.state.answers++;

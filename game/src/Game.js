@@ -73,7 +73,7 @@ export default class Game extends React.Component {
                     this.setState({pointTotal: snapshot.val()})
                 })
                 firebase.database().ref(`users/${this.state.userID}/questionAsker`).on("value", snapshot => {
-                    console.log("QA", snapshot.val())
+                    // console.log("QA", snapshot.val())
                     this.setState({questionAsker: (snapshot.val() + "")})
                 })
                 // Calls for the cards to be shuffled prior to start of game
