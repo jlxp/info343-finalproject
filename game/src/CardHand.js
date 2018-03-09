@@ -4,6 +4,8 @@
 
 import React from "react";
 import Card from './Card';
+import firebase from "firebase/app";
+
 
 export default class CardHand extends React.Component {
     constructor(props) {
@@ -31,7 +33,10 @@ export default class CardHand extends React.Component {
                         // if card index corresponds with an index currently in the users hand
                         if(currHand.includes(card.index)) {
                             // sets player index on card to reflect it belongs to current user's index
-                            cardSnap.ref.update({
+                            let key = cardSnap.key;
+                            firebase.database().ref(`cards/white_cards/${key}`).update({
+                                answer: card.answer,
+                                index: card.index,
                                 playerIndex: userIndex
                             });
                             // creates a card object for each card currently in user's hand

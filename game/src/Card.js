@@ -56,7 +56,19 @@ export default class Card extends React.Component {
                                         let nextIndexCardSnap = whiteCardSnap;
                                         let key = whiteCardSnap.key;
                                         // assigns newly dealt card to the current player index
-                                        firebase.database().ref(`cards/white_cards/${key}/playerIndex`).set(this.props.userIndex);
+                                        firebase.database().ref(`cards/white_cards/${key}`).update({
+                                            answer: whiteCard.answer,
+                                            index: whiteCard.index,
+                                            playerIndex: this.props.userIndex
+                                        });//.set(this.props.userIndex);
+                                        // updates previous "used card" to unassign the userIndex to the card
+                                        let oldKey = cardSnap.key;
+                                        firebase.database().ref(`cards/white_cards/${oldKey}`).update({
+                                            answer: whiteCard.answer,
+                                            index: whiteCard.index,
+                                            answerCardPlayer: this.props.userIndex
+                                        });
+            
                                         // creates an object with data for the new card to create card object
                                         let cardObj = {
                                             userID: this.props.userID,

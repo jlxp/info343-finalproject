@@ -61,9 +61,9 @@ export default class AnswerCard extends React.Component {
                     let user = userSnap.val();
                     // console.log("winning user:",user);
                     console.log("user index:", user.index);
-                    console.log("player with winning card:", this.props.playerIndex);
+                    console.log("player with winning card:", this.props.answerCardPlayer);
                 // finds user whose index matches that on winning card
-                    if(user.index === this.props.playerIndex) {
+                    if(user.index === this.props.answerCardPlayer) {
                         // updates points for user who played the winning card
                         let winnerUid = user.uid;
                         let currPoints = user.points + 1;

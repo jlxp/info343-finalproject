@@ -12,7 +12,7 @@
     "reactstrap": "^5.0.0-beta.2"
   },
   "scripts": {
-    "predeploy":"npm run build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build -a -e game",
     "start": "react-scripts start",
     "build": "react-scripts build",
