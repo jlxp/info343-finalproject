@@ -88,6 +88,10 @@ export default class Game extends React.Component {
         this.authUnlisten(); // stops listening for user events
         firebase.database().ref(`users`).remove(); // removes all current users to start new game
         // removes value listeners to stop listening for changes to Firebase data when game is over
+        this.state.whiteCardsSnap.forEach(whiteCard => {
+            firebase.database().ref(`cards/white_cards/${whiteCard.key}/playerIndex`).set(null);
+        });
+        this.state.currResponsesRef.remove();
         this.state.whiteCardsRef.off("value", this.whiteCardsValueListener);
         this.state.blackCardsRef.off("value", this.blackCardsValueListener);
         this.state.usersRef.off("value", this.userValueListener);

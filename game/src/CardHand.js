@@ -71,7 +71,6 @@ export default class CardHand extends React.Component {
         let cards = this.state.cards.map(cardObj => {
             return <Card key={cardObj.cardSnap.key} userID={cardObj.userID} usersSnap={this.props.usersSnap} whiteCardsRef={cardObj.whiteCardsRef} cardSnap={cardObj.cardSnap} userIndex={cardObj.userIndex} replaceCardAtIndex={this.replaceCardAtIndex} currResponsesRef={this.props.currResponsesRef}/>
         });
-
         return (
             <div id="card-list" className="container row justify-content-center">
                 {cards}

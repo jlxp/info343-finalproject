@@ -14,19 +14,25 @@ export default class Card extends React.Component {
     }
 
     componentWillMount() {
+
         this.props.usersSnap.forEach(userSnap => {
             let user = userSnap.val();
             if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
-                this.setState({questionAsker: user.questionAsker})
+                // this.setState({questionAsker: user.questionAsker}) // Tara's code
+                firebase.database().ref(`users/${user.uid}/questionAsker`).on("value", snapshot => {
+                    // console.log("QA", snapshot.val())
+                    this.setState({questionAsker: (snapshot.val())})
+                })
                 this.setState({uid: user.uid})
             }
         })
+
         this.setState({card: this.props.cardSnap.val()})
     }
 
     // this is called when a user plays a card, updates the users current hand with a new card
     // and moves played card to the current responses
-    handleClick(evt, num) {
+    handleClick(evt, num, prevCardKey) {
         evt.preventDefault();
         console.log("Question Asker:", this.state.questionAsker);
         if(!this.state.questionAsker) { // only allows users to play a card if they are not the current question askers
@@ -76,8 +82,9 @@ export default class Card extends React.Component {
 
     render() {
         let answer = this.props.cardSnap.val();
+        //console.log(this.props.cardSnap.key);
         return (
-            <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index)}>
+            <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index, this.props.cardSnap.key)}>
                 {answer.answer}
             </div>
         );
