@@ -23,8 +23,7 @@ export default class Answers extends React.Component {
         if(this.props.currResponsesSnap) {
             this.props.currResponsesSnap.forEach(responseSnap => {
                 let card = responseSnap.val().card;
-                console.log("Answer card:", card);
-                cardsArr.push(<AnswerCard key={responseSnap.key} answer={card.answer} answerCardPlayer={card.answerCardPlayer} userUID={this.props.userID} clearCards={() => this.clearResponses()} usersSnap={this.props.usersSnap} currQuestionIndexSnap={this.props.currQuestionIndexSnap} currResponsesSnap={this.props.currResponsesSnap}/>)
+                cardsArr.push(<AnswerCard key={responseSnap.key} answer={card.answer} playerIndex={card.playerIndex} userUID={this.props.userID} clearCards={() => this.clearResponses()} usersSnap={this.props.usersSnap} currQuestionIndexSnap={this.props.currQuestionIndexSnap} currResponsesSnap={this.props.currResponsesSnap}/>)
             })
         } 
         return (
