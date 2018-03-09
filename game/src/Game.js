@@ -37,6 +37,8 @@ export default class Game extends React.Component {
         this.authUnlisten = firebase.auth().onAuthStateChanged(user => {
             if(user) { // if a user is signed in
                 this.setState({userID: user.uid});
+                // Calls for the cards to be shuffled prior to start of game
+                this.shuffleCards();
                 // Sets a reference and snapshot for white cards (answers) stored in Firebase, listens for changes
                 let white_ref = firebase.database().ref(`cards/white_cards`);
                 this.whiteCardsValueListener = white_ref.on("value", snapshot => this.setState({whiteCardsSnap: snapshot}));
@@ -73,10 +75,8 @@ export default class Game extends React.Component {
                     this.setState({pointTotal: snapshot.val()})
                 })
                 firebase.database().ref(`users/${this.state.userID}/questionAsker`).on("value", snapshot => {
-                    this.setState({questionAsker: snapshot.val()})
+                    this.setState({questionAsker: (snapshot.val() + "")})
                 })
-                // Calls for the cards to be shuffled prior to start of game
-                this.shuffleCards();
             } else { // if no user currently signed in
                 this.props.history.push(ROUTES.signIn);
             }
@@ -84,9 +84,14 @@ export default class Game extends React.Component {
     }
 
     componentWillUnmount() {
+        this.state.whiteCardsSnap.forEach(whiteCardSnap => {
+            let key = whiteCardSnap.key;
+            firebase.database().ref(`cards/white_cards/${key}/playerIndex`).set(0);
+        });
         this.authUnlisten(); // stops listening for user events
         firebase.database().ref(`users`).remove(); // removes all current users to start new game
         // removes value listeners to stop listening for changes to Firebase data when game is over
+        this.state.currResponsesRef.remove();
         this.state.whiteCardsRef.off("value", this.whiteCardsValueListener);
         this.state.blackCardsRef.off("value", this.blackCardsValueListener);
         this.state.usersRef.off("value", this.userValueListener);

@@ -4,6 +4,8 @@
 
 import React from "react";
 import Card from './Card';
+import firebase from "firebase/app";
+
 
 export default class CardHand extends React.Component {
     constructor(props) {
@@ -19,6 +21,7 @@ export default class CardHand extends React.Component {
                 let user = userSnap.val();
                 if (user.uid === this.props.userID) {
                     let userIndex = user.index;
+                    console.log("hand user index", userIndex);
                     let currHand = [];
                     let obj = user.cards;
                     // adds all indexes of players current cards to an array
@@ -31,15 +34,21 @@ export default class CardHand extends React.Component {
                         // if card index corresponds with an index currently in the users hand
                         if(currHand.includes(card.index)) {
                             // sets player index on card to reflect it belongs to current user's index
-                            cardSnap.ref.update({
+                            let key = cardSnap.key;
+                            firebase.database().ref(`cards/white_cards/${key}`).update({
+                                answer: card.answer,
+                                index: card.index,
                                 playerIndex: userIndex
                             });
                             // creates a card object for each card currently in user's hand
-                            cardsArr.push({
-                                userID: this.props.userID,
-                                whiteCardsRef: this.props.whiteCardsRef,
-                                cardSnap: cardSnap,
-                                userIndex: userIndex
+                            firebase.database().ref(`cards/white_cards/${key}`).once("value", snapshot => {
+                                cardsArr.push({
+                                    userID: this.props.userID,
+                                    whiteCardsRef: this.props.whiteCardsRef,
+                                    cardSnap: snapshot,
+                                    userIndex: userIndex
+                                });
+    
                             });
                         }
                     });
@@ -71,7 +80,6 @@ export default class CardHand extends React.Component {
         let cards = this.state.cards.map(cardObj => {
             return <Card key={cardObj.cardSnap.key} userID={cardObj.userID} usersSnap={this.props.usersSnap} whiteCardsRef={cardObj.whiteCardsRef} cardSnap={cardObj.cardSnap} userIndex={cardObj.userIndex} replaceCardAtIndex={this.replaceCardAtIndex} currResponsesRef={this.props.currResponsesRef}/>
         });
-
         return (
             <div id="card-list" className="container row justify-content-center">
                 {cards}
