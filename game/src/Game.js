@@ -102,7 +102,7 @@ export default class Game extends React.Component {
     shuffleCards() {
         // shuffles an array with integer values for all white cards and assigns them to these answer cards
         let indexes = [];
-        for(let i = 1; i < 214; i++) {
+        for(let i = 1; i < 193; i++) {
             indexes.push(i);
         }
         indexes = this.shuffle(indexes);
