@@ -32,14 +32,9 @@ export default class Card extends React.Component {
     handleClick(evt, num, prevCardKey) {
         evt.preventDefault();
         this.setState({clicked: true});
-        console.log("Question Asker:", this.state.questionAsker);
         if(!this.state.questionAsker) { // only allows users to play a card if they are not the current question askers
-            //if(this.state.answers < 1) {
-                //this.state.answers++;
-                console.log("in card js", this.state.card);
-                this.props.currResponsesRef.push({card: this.state.card}) // pass card data
-                    .catch(err => this.setState({fbError: err}));
-            //}
+            this.props.currResponsesRef.push({card: this.state.card}) // pass card data
+                .catch(err => this.setState({fbError: err}));
             firebase.database().ref(`gameState/currAnswerIndex`).once("value", snapshot => {
                 let currNextIndex = snapshot.val(); // gets index of next answer index
                 this.props.usersSnap.forEach(userSnap => {
@@ -52,7 +47,6 @@ export default class Card extends React.Component {
                                     let whiteCard = whiteCardSnap.val();
                                     // if answer card index matches next answer card in deck index
                                     if(whiteCard.index === currNextIndex) {
-                                        console.log("found it!");
                                         let nextIndexCardSnap;
                                         let key = whiteCardSnap.key;
                                         // assigns newly dealt card to the current player index
@@ -63,7 +57,6 @@ export default class Card extends React.Component {
                                         });
                                         // creates an object with data for the new card to create card object
                                         firebase.database().ref(`cards/white_cards/${key}`).once("value", snapshot => {
-                                            console.log("updating cards right?", snapshot.val());
                                             nextIndexCardSnap = snapshot;
                                         });
                                         let cardObj = {
@@ -90,9 +83,8 @@ export default class Card extends React.Component {
 
     render() {
         let answer = this.props.cardSnap.val();
-        //console.log(this.props.cardSnap.key);
         return (
-            <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index, this.props.cardSnap.key)}>
+            <div className="white-card col" onClick={evt => this.handleClick(evt, answer.index, this.props.cardSnap.key)}>
                 {answer.answer}
             </div>
         );

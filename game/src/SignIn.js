@@ -79,27 +79,34 @@ export default class SignInView extends React.Component {
 
         return(
             <div>
-                <header className="jumbotron jumbotron-fluid bg-info">
-                    <div className="container-fluid">
-                        <h1> Start a new game </h1>
-                        <h6> You must have 4 players to start the game </h6>
+                <header className="jumbotron jumbotron-fluid bg-danger text-white p-0">
+                    <div className="container">
+                        <h1 className="display-4">Nerds Against Humanity</h1>
+                        <p className="lead">Cards Against Humanity game for Informatics students</p>
                     </div>
                 </header>
                 <form onSubmit={evt => this.handleSubmit(evt)} className="pl-5">
-                    <div className="form-group">
-                        <label htmlFor="user-name">User Name</label>
+                    <h1> Start a new game </h1>
+                    <p>The game will begin automatically after 4 players join</p>
+                    <p></p>
+                    <div className="form-group pt-3">
+                        <label htmlFor="user-name">Choose a nickname</label>
                         <input type="text"
                             id="user-name"
                             className="form-control"
-                            placeholder="your user name"
+                            placeholder="ex: Notorious Dave Stearns"
                             onChange={event => this.setState({userName: event.target.value})}/>
                     </div>
-                    <button className="btn btn-info mb-2">Submit</button>
+                    <button className="btn btn-danger mb-2">Submit</button>
                 </form>
-                <div className="pl-5">
+                <div className="p-5">
                     <h2>Current Players</h2>
-                    {playersNames}
-                    {waiting}
+                    <div className="pl-4">
+                        {playersNames}
+                        <div className="text-danger" >
+                            {waiting}
+                        </div>
+                    </div>
                 </div>
             </div>
         );

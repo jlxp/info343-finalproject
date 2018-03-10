@@ -181,29 +181,37 @@ export default class Game extends React.Component {
 
     render() {
         if(this.state.gameStateSnap) { // waits until firebase references have returned to call components
+            let QA = '';
+            if (this.state.questionAsker === "true") {
+                QA = "YES!"
+            } else {
+                QA = "no";
+            }
             return (
                 <div>
-                    <div className="jumbotron jumbotron-fluid bg-info m-0 p-0">
+                    <div className="jumbotron jumbotron-fluid bg-danger text-white p-0">
                         <div className="container">
                             <h1 className="display-4">Nerds Against Humanity</h1>
                             <p className="lead">Cards Against Humanity game for Informatics students</p>
                         </div>
                     </div>
-                    <div className="container row">
-                        <h5 className="pl-5 col">Welcome, {this.state.displayName}!</h5>
-                        <h5 className="col">Current Points: {this.state.pointTotal}</h5>
-                        <h5 className="col">Current Question Asker: {this.state.questionAsker}</h5>
-                    </div>
-                    <div id="card-container" className="container row">
-                        <div id="question-card" className="col">
-                            <Question stateSnap={this.state.gameStateSnap} blackCardsSnap={this.state.blackCardsSnap} usersSnap={this.state.usersSnap}/>
+                    <div className="container justify-content-center">
+                        <div className="row">
+                            <h5 className="col">Welcome, {this.state.displayName}!</h5>
+                            <h5 className="col">Your Points: {this.state.pointTotal}</h5>
+                            <h5 className="col">Are you the Choosen One? {QA}</h5>
                         </div>
-                        <div id="answer-cards" className="col">
-                            <Answers currResponsesSnap={this.state.currResponsesSnap} currQuestionIndexSnap={this.state.currQuestionIndexSnap} gameStateSnap={this.state.gameStateSnap} usersSnap={this.state.usersSnap} userID={this.state.userID}/>
+                        <div id="card-container" className="row">
+                            <div id="question-card" className="col">
+                                <Question stateSnap={this.state.gameStateSnap} blackCardsSnap={this.state.blackCardsSnap} usersSnap={this.state.usersSnap}/>
+                            </div>
+                            <div id="answer-cards" className="col">
+                                <Answers currResponsesSnap={this.state.currResponsesSnap} currQuestionIndexSnap={this.state.currQuestionIndexSnap} gameStateSnap={this.state.gameStateSnap} usersSnap={this.state.usersSnap} userID={this.state.userID}/>
+                            </div>
                         </div>
-                    </div>
-                    <div id="player-hand" className="m-5 justify-content-center">
-                        <CardHand usersSnap={this.state.usersSnap} whiteCardsSnap={this.state.whiteCardsSnap} whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID} currResponsesRef={this.state.currResponsesRef}/>
+                        <div id="player-hand">
+                            <CardHand usersSnap={this.state.usersSnap} whiteCardsSnap={this.state.whiteCardsSnap} whiteCardsRef={this.state.whiteCardsRef} userID={this.state.userID} currResponsesRef={this.state.currResponsesRef}/>
+                        </div>
                     </div>
                 </div>
             );
