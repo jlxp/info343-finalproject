@@ -18,7 +18,7 @@ export default class Card extends React.Component {
         this.props.usersSnap.forEach(userSnap => {
             let user = userSnap.val();
             if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
-                firebase.database().ref(`users/${user.uid}/questionAsker`).once("value", snapshot => {
+                firebase.database().ref(`users/${user.uid}/questionAsker`).on("value", snapshot => {
                     this.setState({questionAsker: (snapshot.val())})
                 })
                 this.setState({uid: user.uid})
@@ -30,22 +30,10 @@ export default class Card extends React.Component {
     // this is called when a user plays a card, updates the users current hand with a new card
     // and moves played card to the current responses
     handleClick(evt, num, prevCardKey) {
-        let questionAsker;
-        let uid;
-        this.props.usersSnap.forEach(userSnap => {
-            let user = userSnap.val();
-            if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
-                firebase.database().ref(`users/${user.uid}/questionAsker`).on("value", snapshot => {
-                    questionAsker = snapshot.val();
-                })
-                uid = user.uid;
-            }
-        })
-
         evt.preventDefault();
         this.setState({clicked: true});
-        if(!questionAsker) { // only allows users to play a card if they are not the current question askers
-            this.props.currResponsesRef.push({card: this.props.cardSnap.val()}) // pass card data
+        if(!this.state.questionAsker) { // only allows users to play a card if they are not the current question askers
+            this.props.currResponsesRef.push({card: this.state.card}) // pass card data
                 .catch(err => this.setState({fbError: err}));
             firebase.database().ref(`gameState/currAnswerIndex`).once("value", snapshot => {
                 let currNextIndex = snapshot.val(); // gets index of next answer index
@@ -53,9 +41,7 @@ export default class Card extends React.Component {
                     let i = 0; // keeps track of current card in a user's hand
                     userSnap.child("cards").forEach(cardSnap => {
                         i++;
-                        console.log("DOES CARDSHAP" + cardSnap.val() + "EQUAL" + num + "??");
                         if(cardSnap.val() === num) {
-                            console.log("YES!");
                             this.props.whiteCardsRef.once("value", cardSnapshot => {
                                 cardSnapshot.forEach(whiteCardSnap => {
                                     let whiteCard = whiteCardSnap.val();
@@ -79,11 +65,10 @@ export default class Card extends React.Component {
                                             cardSnap: nextIndexCardSnap,
                                             userIndex: this.props.userIndex
                                         }
-                                        console.log("got to card obj", cardObj);
                                         // replaces card in users current hand
                                         this.props.replaceCardAtIndex(num, cardObj);
                                         let cardStr = "card" + i;
-                                        firebase.database().ref(`users/${uid}/cards/${cardStr}`).set(currNextIndex);
+                                        firebase.database().ref(`users/${this.state.uid}/cards/${cardStr}`).set(currNextIndex);
                                         let nextIndex = currNextIndex + 1;
                                         firebase.database().ref(`gameState/currAnswerIndex`).set(nextIndex);
                                     }
