@@ -5,26 +5,34 @@
 
 import React from "react";
 import GameOverModal from './GameOverModal';
+import firebase from "firebase/app";
 
 
 export default class GameEnd extends React.Component {
-    render() {
-        let showModal = false;
-        let displayName = undefined;
-        if(this.props.usersSnap) {
-            // checks if any current players have reached 5 points
-            this.props.usersSnap.forEach(userSnap => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal: false
+        };
+    }
+
+    componentWillMount() {
+        firebase.database().ref(`users`).on("value", snapshot => {
+            snapshot.forEach(userSnap => {
                 let user = userSnap.val();
-                if(user.points > 2) {
-                    showModal = true; // if someone has 3 points, triggers modal to end game
-                    displayName = user.displayName;
+                if (user.points > 2) {
+                    this.setState({showModal: true})
+                    this.setState({winner: user.displayName})
                 }
             })
-        }
-        if(showModal) {
-            return (<GameOverModal winner={displayName} showModal={showModal}/>);
+        })
+    }
+
+    render() {
+        if(this.state.showModal) {
+            return (<GameOverModal winner={this.state.winner} showModal={this.state.showModal}/>);
         } else {
-            return null;
+            return null
         }
     }
 }
