@@ -83,10 +83,18 @@ export default class Card extends React.Component {
 
     render() {
         let answer = this.props.cardSnap.val();
-        return (
-            <div className="white-card col" onClick={evt => this.handleClick(evt, answer.index, this.props.cardSnap.key)}>
-                {answer.answer}
-            </div>
-        );
+        if(this.state.questionAsker) {
+            return (
+                <div className="white-card col" onClick={evt => this.handleClick(evt, answer.index, this.props.cardSnap.key)}>
+                    {answer.answer}
+                </div>
+            );
+        } else {
+            return (
+                <div className="white-card col" onClick={evt => this.handleClick(evt, answer.index, this.props.cardSnap.key)}>
+                    {answer.answer}
+                </div>
+            );
+        }
     }
 }
