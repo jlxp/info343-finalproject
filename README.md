@@ -21,4 +21,4 @@ Players will enter the game room by entering a nickname which will be stored in 
 
 #### Here is our [final solution](https://info343b-w18.github.io/info343-finalproject/game/#/) on GitHub pages.
 
-* Final notes: The game requires 4 players to play (can be 4 seperate browsers, i.e. Chrome, Chrome Incognito, Firefox, Firefox Private). The person who is marked as the "Chosen One" is the one who chooses the funniest card for the round and should NOT click on any of their cards to play for that round. Please let us know if you have any questions about how to play or if anything is acting funny because it should be totally functional. Thank you so much!
+* Final notes: The game requires 4 players to play (can be 4 seperate browsers, i.e. Chrome, Chrome Incognito, Firefox, Firefox Private). The person who is marked as the "Chosen One" is the one who chooses the funniest card for the round and should NOT click on any of their cards to play for that round. The game will end when one player has 3 points. Please let us know if you have any questions about how to play or if anything is acting funny because it should be totally functional. Thank you so much!

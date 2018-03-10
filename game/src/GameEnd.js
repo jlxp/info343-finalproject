@@ -15,8 +15,8 @@ export default class GameEnd extends React.Component {
             // checks if any current players have reached 5 points
             this.props.usersSnap.forEach(userSnap => {
                 let user = userSnap.val();
-                if(user.points > 4) {
-                    showModal = true; // if someone has 5 points, triggers modal to end game
+                if(user.points > 2) {
+                    showModal = true; // if someone has 3 points, triggers modal to end game
                     displayName = user.displayName;
                 }
             })
