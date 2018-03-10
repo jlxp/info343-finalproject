@@ -59,9 +59,6 @@ export default class AnswerCard extends React.Component {
                 this.props.currQuestionIndexSnap.ref.set(nextIndex);
                 this.props.usersSnap.forEach(userSnap => {
                     let user = userSnap.val();
-                    // console.log("winning user:",user);
-                    console.log("user index:", user.index);
-                    console.log("player with winning card:", this.props.playerIndex);
                 // finds user whose index matches that on winning card
                     if(user.index === this.props.playerIndex) {
                         // updates points for user who played the winning card
@@ -89,7 +86,7 @@ export default class AnswerCard extends React.Component {
     render() {
         let answer = this.props.answer;
         return (
-            <div className="white-card col mr-2" onClick={evt => this.handleClick(evt, answer.index)}>
+            <div className="white-card col" onClick={evt => this.handleClick(evt, answer.index)}>
                 {answer}
             </div>
         );

@@ -27,7 +27,7 @@ export default class Answers extends React.Component {
             })
         } 
         return (
-            <div id="response-list" className="container row justify-content-end">
+            <div id="response-list" className="container row">
                 {cardsArr}
             </div>
         );

@@ -21,7 +21,6 @@ export default class CardHand extends React.Component {
                 let user = userSnap.val();
                 if (user.uid === this.props.userID) {
                     let userIndex = user.index;
-                    console.log("hand user index", userIndex);
                     let currHand = [];
                     let obj = user.cards;
                     // adds all indexes of players current cards to an array
@@ -80,8 +79,9 @@ export default class CardHand extends React.Component {
         let cards = this.state.cards.map(cardObj => {
             return <Card key={cardObj.cardSnap.key} userID={cardObj.userID} usersSnap={this.props.usersSnap} whiteCardsRef={cardObj.whiteCardsRef} cardSnap={cardObj.cardSnap} userIndex={cardObj.userIndex} replaceCardAtIndex={this.replaceCardAtIndex} currResponsesRef={this.props.currResponsesRef}/>
         });
+        
         return (
-            <div id="card-list" className="container row justify-content-center">
+            <div id="card-list" className="container row justify-content-center pt-4">
                 {cards}
             </div>
         );
