@@ -97,6 +97,7 @@ export default class Game extends React.Component {
         this.state.usersRef.off("value", this.userValueListener);
         this.state.gameStateRef.off("value", this.gameStateValueListener);
         this.state.currResponsesRef.off("value", this.currResponsesValueListener);
+        this.props.history.push(ROUTES.signIn);
     }
 
     shuffleCards() {
