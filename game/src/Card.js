@@ -42,7 +42,7 @@ export default class Card extends React.Component {
                     userSnap.child("cards").forEach(cardSnap => {
                         i++;
                         if(cardSnap.val() === num) {
-                            this.props.whiteCardsRef.once("value", cardSnapshot => {
+                            firebase.database().ref(`cards/white_cards`).once("value", cardSnapshot => {
                                 cardSnapshot.forEach(whiteCardSnap => {
                                     let whiteCard = whiteCardSnap.val();
                                     // if answer card index matches next answer card in deck index
