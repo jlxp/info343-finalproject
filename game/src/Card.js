@@ -14,18 +14,18 @@ export default class Card extends React.Component {
         };
     }
 
-    componentWillMount() {
-        this.props.usersSnap.forEach(userSnap => {
-            let user = userSnap.val();
-            if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
-                firebase.database().ref(`users/${user.uid}/questionAsker`).once("value", snapshot => {
-                    this.setState({questionAsker: (snapshot.val())})
-                })
-                this.setState({uid: user.uid})
-            }
-        })
-        this.setState({card: this.props.cardSnap.val()});
-    }
+    // componentWillMount() {
+    //     this.props.usersSnap.forEach(userSnap => {
+    //         let user = userSnap.val();
+    //         if (user.index === this.props.userIndex) { // checks if current user is currently the question asker
+    //             firebase.database().ref(`users/${user.uid}/questionAsker`).once("value", snapshot => {
+    //                 this.setState({questionAsker: (snapshot.val())})
+    //             })
+    //             this.setState({uid: user.uid})
+    //         }
+    //     })
+    //     this.setState({card: this.props.cardSnap.val()});
+    // }
 
     // this is called when a user plays a card, updates the users current hand with a new card
     // and moves played card to the current responses
