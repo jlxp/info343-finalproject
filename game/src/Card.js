@@ -41,7 +41,9 @@ export default class Card extends React.Component {
                     let i = 0; // keeps track of current card in a user's hand
                     userSnap.child("cards").forEach(cardSnap => {
                         i++;
+                        console.log("DOES CARDSHAP" + cardSnap.val() + "EQUAL" + num + "??");
                         if(cardSnap.val() === num) {
+                            console.log("YES!");
                             this.props.whiteCardsRef.once("value", cardSnapshot => {
                                 cardSnapshot.forEach(whiteCardSnap => {
                                     let whiteCard = whiteCardSnap.val();

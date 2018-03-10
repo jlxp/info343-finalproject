@@ -84,7 +84,6 @@ export default class Game extends React.Component {
     }
 
     componentWillUnmount() {
-        this.props.history.push(ROUTES.signIn);
         this.state.whiteCardsSnap.forEach(whiteCardSnap => {
             let key = whiteCardSnap.key;
             firebase.database().ref(`cards/white_cards/${key}/playerIndex`).set(0);
